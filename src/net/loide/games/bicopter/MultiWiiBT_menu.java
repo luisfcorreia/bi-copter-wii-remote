@@ -13,8 +13,6 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -22,10 +20,6 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
@@ -69,7 +63,8 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 		case R.id.startgameBtn:
 			// handle button A click;
 
-			Intent myIntent = new Intent(MultiWiiBT_menu.this, Bluetest.class);
+//			Intent myIntent = new Intent(MultiWiiBT_menu.this, Bluetest.class);
+			Intent myIntent = new Intent(MultiWiiBT_menu.this, Controller.class);
 			MultiWiiBT_menu.this.startActivity(myIntent);
 			break;
 
