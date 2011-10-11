@@ -22,7 +22,7 @@ public class Bluetest extends Activity {
     public void onResume()
     {
         super.onResume();
-        tBlue=new TBlue("08:11:07:08:00:17"); 
+        tBlue=new TBlue(""); 
         if (tBlue.streaming()) {
             messagesTv.append("Connected succesfully! ");
         } else {

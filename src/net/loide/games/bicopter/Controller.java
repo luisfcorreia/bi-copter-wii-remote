@@ -95,54 +95,111 @@ public class Controller extends Activity implements OnTouchListener {
 
 		}
 
-		private void touch_start(float x, float y) {
-			lX = x;
-			lY = y;
-		}
-
-		private void touch_move(float x, float y) {
-			float dx = Math.abs(x - lX);
-			float dy = Math.abs(y - lY);
-			if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-				lX = x;
-				lY = y;
-			}
-		}
-
-		private void touch_up() {
-
-			lX = 175;
-			lY = 390 - circleSize;
-		}
-
 		public boolean onTouchEvent(MotionEvent event) {
+
+			float x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+			float dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
 
 			int pointerCount = event.getPointerCount();
 
+			if (pointerCount == 1) {
+				x1 = event.getX();
+				y1 = event.getY();
+			}
+
+			if (pointerCount == 2) {
+				x1 = event.getX(0);
+				y1 = event.getY(0);
+				x2 = event.getX(1);
+				y2 = event.getY(1);
+			}
+
+			Log.d(TAG, "num pointers:" + pointerCount);
+
 			// Dump touch event to log
-			dumpEvent(event);
+			// dumpEvent(event);
 
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
-				float x = event.getX();
-				float y = event.getY();
-				touch_start(x, y);
+				if ((x1 > 25) && (x1 < 325) && (y1 > 90) && (y1 < 390)) {
+					lX = x1;
+					lY = y1;
+				}
+				if ((x1 > 475) && (x1 < 775) && (y1 > 90) && (y1 < 390)) {
+					rX = x1;
+					rY = y1;
+				}
+				invalidate();
 				break;
 
 			case MotionEvent.ACTION_POINTER_DOWN:
-				rX = event.getX(1);
-				rY = event.getY(1);
+				if ((x2 > 25) && (x2 < 325) && (y2 > 90) && (y2 < 390)) {
+					lX = x2;
+					lY = y2;
+				}
+				if ((x2 > 475) && (x2 < 775) && (y2 > 90) && (y2 < 390)) {
+					rX = x2;
+					rY = y2;
+				}
 
+				invalidate();
 				break;
 
 			case MotionEvent.ACTION_MOVE:
-				touch_move(event.getX(), event.getY());
+				// testar pointer 1 no quadrado esquerdo
+				if ((x1 > 25) && (x1 < 325) && (y1 > 90) && (y1 < 390)) {
+					dx1 = Math.abs(x1 - lX);
+					dy1 = Math.abs(y1 - lY);
+					if (dx1 >= TOUCH_TOLERANCE || dy1 >= TOUCH_TOLERANCE) {
+						lX = x1;
+						lY = y1;
+					}
+				}
+				// testar pointer 2 no quadrado esquerdo
+				if ((x2 > 25) && (x2 < 325) && (y2 > 90) && (y2 < 390)) {
+					dx2 = Math.abs(x2 - lX);
+					dy2 = Math.abs(y2 - lY);
+					if (dx2 >= TOUCH_TOLERANCE || dy2 >= TOUCH_TOLERANCE) {
+						lX = x2;
+						lY = y2;
+					}
+				}
+				// testar pointer 1 no quadrado direito
+				if ((x1 > 475) && (x1 < 775) && (y1 > 90) && (y1 < 390)) {
+					dx1 = Math.abs(x1 - lX);
+					dy1 = Math.abs(y1 - lY);
+					if (dx1 >= TOUCH_TOLERANCE || dy1 >= TOUCH_TOLERANCE) {
+						rX = x1;
+						rY = y1;
+					}
+				}
+				// testar pointer 2 no quadrado direito
+				if ((x2 > 475) && (x2 < 775) && (y2 > 90) && (y2 < 390)) {
+					dx2 = Math.abs(x2 - lX);
+					dy2 = Math.abs(y2 - lY);
+					if (dx2 >= TOUCH_TOLERANCE || dy2 >= TOUCH_TOLERANCE) {
+						rX = x2;
+						rY = y2;
+					}
+				}
+
+				invalidate();
 				break;
 
 			case MotionEvent.ACTION_UP:
-				touch_up();
+			case MotionEvent.ACTION_POINTER_UP:
+				if ((x1 > 25) && (x1 < 325) && (y1 > 90) && (y1 < 390)) {
+					lX = 175;
+					lY = 390 - circleSize;
+				}
+				if ((x2 > 475) && (x2 < 775) && (y2 > 90) && (y2 < 390)) {
+					rX = 625;
+					rY = 240;
+				}
+				invalidate();
 				break;
 			}
+
 			return true;
 		}
 
