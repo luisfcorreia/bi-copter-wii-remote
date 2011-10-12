@@ -27,8 +27,16 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" 
 		android:text="Exit"
-		android:layout_y="380px" 
-		android:layout_x="730px"
+		android:layout_y="360px" 
+		android:layout_x="700px"
 		 />
+	<Button 
+		android:id="@+id/configBtn" 
+		android:text="Config" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:layout_y="164dp"
+		android:layout_x="157dp" 
+		/>
 
 </AbsoluteLayout>

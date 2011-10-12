@@ -28,15 +28,25 @@ public class Controller extends Activity implements OnTouchListener {
 
 	private Paint mPaint;
 
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	public class MyView extends View {
 
 		private Canvas mCanvas;
 
 		private int circleSize = 32;
-		private float lX = 175;
-		private float lY = 390 - circleSize;
+		private float lX = 150;
+		private float lY = 480 - circleSize;
+/*
 		private float rX = 625;
 		private float rY = 240;
+*/
+		private float x = 0, y = 0;
+		private float dx1 = 0, dy1 = 0;
 
 		private static final float TOUCH_TOLERANCE = 4;
 
@@ -55,11 +65,7 @@ public class Controller extends Activity implements OnTouchListener {
 
 			// desenhar quadrado esquerdo
 			mPaint.setColor(0xFF92C957);
-			canvas.drawRect(25, 90, 325, 390, mPaint);
-
-			// desenhar quadrado direito
-			mPaint.setColor(0xFF92C957);
-			canvas.drawRect(475, 90, 775, 390, mPaint);
+			canvas.drawRect(0, 0, 300, 480, mPaint);
 
 			// desenhar takeoff
 			mPaint.setColor(0xFF0011EE);
@@ -83,122 +89,61 @@ public class Controller extends Activity implements OnTouchListener {
 			path1.close();
 			canvas.drawPath(path1, mPaint);
 
+			mPaint.setColor(0xFFFFFFFF);
+			canvas.drawText("Pitch  : "+MultiWiiBT_menu.pitch, 500, 20, mPaint);
+			canvas.drawText("Roll   : "+MultiWiiBT_menu.roll,  500, 40, mPaint);
+			canvas.drawText("Yaw    : "+MultiWiiBT_menu.yaw,   500, 60, mPaint);
+			
+			mPaint.setColor(0xFFFFFFFF);
+			canvas.drawText("accX   : "+MultiWiiBT_menu.accX,  500, 80, mPaint);
+			canvas.drawText("accY   : "+MultiWiiBT_menu.accY,  500,100, mPaint);
+			canvas.drawText("accZ   : "+MultiWiiBT_menu.accZ,  500,120, mPaint);
+			
 			// desenhar stick esquerdo
 			mPaint.setColor(0xFFCDE3A1);
-			// canvas.drawCircle(175, 240, 48, mPaint);
 			canvas.drawCircle(lX, lY, circleSize, mPaint);
-
-			// desenhar stick direito
-			mPaint.setColor(0xFFCDE3A1);
-			// canvas.drawCircle(625, 240, 48, mPaint);
-			canvas.drawCircle(rX, rY, circleSize, mPaint);
 
 		}
 
 		public boolean onTouchEvent(MotionEvent event) {
 
-			float x1 = 0, y1 = 0, x2 = 0, y2 = 0;
-			float dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
-
-			int pointerCount = event.getPointerCount();
-
-			if (pointerCount == 1) {
-				x1 = event.getX();
-				y1 = event.getY();
-			}
-
-			if (pointerCount == 2) {
-				x1 = event.getX(0);
-				y1 = event.getY(0);
-				x2 = event.getX(1);
-				y2 = event.getY(1);
-			}
-
-			Log.d(TAG, "num pointers:" + pointerCount);
-
-			// Dump touch event to log
-			// dumpEvent(event);
+			x = event.getX();
+			y = event.getY();
 
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
-				if ((x1 > 25) && (x1 < 325) && (y1 > 90) && (y1 < 390)) {
-					lX = x1;
-					lY = y1;
+				if ((x > 0) && (x < 300)) {
+					if ((y > 0) && (y < 480)) {
+						lX = x;
+						lY = y;
+					}
 				}
-				if ((x1 > 475) && (x1 < 775) && (y1 > 90) && (y1 < 390)) {
-					rX = x1;
-					rY = y1;
-				}
-				invalidate();
-				break;
-
-			case MotionEvent.ACTION_POINTER_DOWN:
-				if ((x2 > 25) && (x2 < 325) && (y2 > 90) && (y2 < 390)) {
-					lX = x2;
-					lY = y2;
-				}
-				if ((x2 > 475) && (x2 < 775) && (y2 > 90) && (y2 < 390)) {
-					rX = x2;
-					rY = y2;
-				}
-
 				invalidate();
 				break;
 
 			case MotionEvent.ACTION_MOVE:
-				// testar pointer 1 no quadrado esquerdo
-				if ((x1 > 25) && (x1 < 325) && (y1 > 90) && (y1 < 390)) {
-					dx1 = Math.abs(x1 - lX);
-					dy1 = Math.abs(y1 - lY);
-					if (dx1 >= TOUCH_TOLERANCE || dy1 >= TOUCH_TOLERANCE) {
-						lX = x1;
-						lY = y1;
+				if ((x > 0) && (x < 300)) {
+					if ((y > 0) && (y < 480)) {
+						dx1 = Math.abs(x - lX);
+						dy1 = Math.abs(y - lY);
+						if (dx1 >= TOUCH_TOLERANCE || dy1 >= TOUCH_TOLERANCE) {
+							lX = x;
+							lY = y;
+						}
 					}
 				}
-				// testar pointer 2 no quadrado esquerdo
-				if ((x2 > 25) && (x2 < 325) && (y2 > 90) && (y2 < 390)) {
-					dx2 = Math.abs(x2 - lX);
-					dy2 = Math.abs(y2 - lY);
-					if (dx2 >= TOUCH_TOLERANCE || dy2 >= TOUCH_TOLERANCE) {
-						lX = x2;
-						lY = y2;
-					}
-				}
-				// testar pointer 1 no quadrado direito
-				if ((x1 > 475) && (x1 < 775) && (y1 > 90) && (y1 < 390)) {
-					dx1 = Math.abs(x1 - lX);
-					dy1 = Math.abs(y1 - lY);
-					if (dx1 >= TOUCH_TOLERANCE || dy1 >= TOUCH_TOLERANCE) {
-						rX = x1;
-						rY = y1;
-					}
-				}
-				// testar pointer 2 no quadrado direito
-				if ((x2 > 475) && (x2 < 775) && (y2 > 90) && (y2 < 390)) {
-					dx2 = Math.abs(x2 - lX);
-					dy2 = Math.abs(y2 - lY);
-					if (dx2 >= TOUCH_TOLERANCE || dy2 >= TOUCH_TOLERANCE) {
-						rX = x2;
-						rY = y2;
-					}
-				}
-
 				invalidate();
 				break;
 
 			case MotionEvent.ACTION_UP:
-			case MotionEvent.ACTION_POINTER_UP:
-				if ((x1 > 25) && (x1 < 325) && (y1 > 90) && (y1 < 390)) {
-					lX = 175;
-					lY = 390 - circleSize;
-				}
-				if ((x2 > 475) && (x2 < 775) && (y2 > 90) && (y2 < 390)) {
-					rX = 625;
-					rY = 240;
-				}
+				lX = 150;
+				//lY = 480 - circleSize;
 				invalidate();
 				break;
 			}
+
+			dumpEvent(event);
+			// Log.d(TAG, "Left:" + lX + " " + lY );
 
 			return true;
 		}
@@ -212,8 +157,8 @@ public class Controller extends Activity implements OnTouchListener {
 		}
 
 		/** Show an event in the LogCat view, for debugging */
+
 		private void dumpEvent(MotionEvent event) {
-			// ...
 			String names[] = { "DOWN", "UP", "MOVE", "CANCEL", "OUTSIDE",
 					"POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?" };
 			StringBuilder sb = new StringBuilder();
@@ -241,9 +186,4 @@ public class Controller extends Activity implements OnTouchListener {
 
 	}
 
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 }

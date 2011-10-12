@@ -2,4 +2,5 @@
 <resources>
     <string name="hello">Hello World, MultiWiiBT!</string>
     <string name="app_name">bi-copter-remote</string>
+
 </resources>
