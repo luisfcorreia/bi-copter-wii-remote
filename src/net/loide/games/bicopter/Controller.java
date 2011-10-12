@@ -6,15 +6,29 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
-public class Controller extends Activity implements OnTouchListener {
+public class Controller extends Activity implements OnTouchListener, SensorEventListener {
 	private static final String TAG = "Touch";
+	public static String pitch;
+	public static String roll;
+	public static String yaw;
+	public static String accX;
+	public static String accY;
+	public static String accZ;
 
+	private SensorManager sensorManager = null;
+	
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(new MyView(this));
@@ -24,14 +38,17 @@ public class Controller extends Activity implements OnTouchListener {
 		mPaint.setDither(true);
 		mPaint.setColor(0xFFFF0000);
 		mPaint.setStrokeWidth(12);
+
+		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+	
 	}
 
 	private Paint mPaint;
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		// TODO Auto-generated method stub
-		return false;
+ 		return false;
 	}
 
 	public class MyView extends View {
@@ -90,14 +107,14 @@ public class Controller extends Activity implements OnTouchListener {
 			canvas.drawPath(path1, mPaint);
 
 			mPaint.setColor(0xFFFFFFFF);
-			canvas.drawText("Pitch  : "+MultiWiiBT_menu.pitch, 500, 20, mPaint);
-			canvas.drawText("Roll   : "+MultiWiiBT_menu.roll,  500, 40, mPaint);
-			canvas.drawText("Yaw    : "+MultiWiiBT_menu.yaw,   500, 60, mPaint);
+			canvas.drawText("Pitch  : "+pitch, 500, 20, mPaint);
+			canvas.drawText("Roll   : "+roll,  500, 40, mPaint);
+			canvas.drawText("Yaw    : "+yaw,   500, 60, mPaint);
 			
 			mPaint.setColor(0xFFFFFFFF);
-			canvas.drawText("accX   : "+MultiWiiBT_menu.accX,  500, 80, mPaint);
-			canvas.drawText("accY   : "+MultiWiiBT_menu.accY,  500,100, mPaint);
-			canvas.drawText("accZ   : "+MultiWiiBT_menu.accZ,  500,120, mPaint);
+			canvas.drawText("accX   : "+accX,  500, 80, mPaint);
+			canvas.drawText("accY   : "+accY,  500,100, mPaint);
+			canvas.drawText("accZ   : "+accZ,  500,120, mPaint);
 			
 			// desenhar stick esquerdo
 			mPaint.setColor(0xFFCDE3A1);
@@ -184,6 +201,51 @@ public class Controller extends Activity implements OnTouchListener {
 			Log.d(TAG, sb.toString());
 		}
 
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// Register this class as a listener for the accelerometer sensor
+		sensorManager.registerListener(this,
+				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+				SensorManager.SENSOR_DELAY_GAME);
+		// ...and the orientation sensor
+		sensorManager.registerListener(this,
+				sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+				SensorManager.SENSOR_DELAY_GAME);
+	}
+
+	@Override
+	protected void onStop() {
+		// Unregister the listener
+		sensorManager.unregisterListener(this);
+		super.onStop();
+	}
+	public void onSensorChanged(SensorEvent sensorEvent) {
+//		synchronized (this) {
+			if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+				int x = Math.round(sensorEvent.values[0]);
+				int y = Math.round(sensorEvent.values[1]);
+				int z = Math.round(sensorEvent.values[2]);
+				accX = String.valueOf((int) (Math.abs(x)));
+				accY = String.valueOf((int) (Math.abs(y)));
+				accZ = String.valueOf((int) (Math.abs(z)));
+			}
+
+			if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
+				int x = Math.round(sensorEvent.values[0]);
+				int y = Math.round(sensorEvent.values[1]);
+				int z = Math.round(sensorEvent.values[2]);
+				pitch = String.valueOf((int) (Math.abs(x)));
+				roll = String.valueOf((int)  (Math.abs(y)));
+				yaw = String.valueOf((int)   (Math.abs(z)));
+
+			}
+//		}
+	}
+
+	public void onAccuracyChanged(Sensor arg0, int arg1) {
 	}
 
 }

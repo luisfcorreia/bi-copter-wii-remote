@@ -11,23 +11,18 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class MultiWiiBT_menu extends Activity implements OnClickListener,
-		SensorEventListener {
+public class MultiWiiBT_menu extends Activity implements OnClickListener {
 
-	public static String pitch;
-	public static String roll;
-	public static String yaw;
-	public static String accX;
-	public static String accY;
-	public static String accZ;
 	public BluetoothAdapter mBluetoothAdapter;
 
-	private SensorManager sensorManager = null;
 	private Vibrator vibrator = null;
 	
 	/** Called when the activity is first created. */
@@ -46,7 +41,6 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener,
 		button3.setOnClickListener(this);
 
 		// init sensors
-		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		vibrator.cancel();
 
@@ -63,25 +57,6 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener,
 		
 	}
 	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		// Register this class as a listener for the accelerometer sensor
-		sensorManager.registerListener(this,
-				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-				SensorManager.SENSOR_DELAY_GAME);
-		// ...and the orientation sensor
-		sensorManager.registerListener(this,
-				sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-				SensorManager.SENSOR_DELAY_GAME);
-	}
-
-	@Override
-	protected void onStop() {
-		// Unregister the listener
-		sensorManager.unregisterListener(this);
-		super.onStop();
-	}
 
 	public void onClick(View v) {
 		Intent myIntent;
@@ -100,8 +75,8 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener,
 
 			// Intent myIntent = new Intent(MultiWiiBT_menu.this,
 			// Bluetest.class);
-			myIntent = new Intent(MultiWiiBT_menu.this, Config.class);
-			MultiWiiBT_menu.this.startActivity(myIntent);
+			//myIntent = new Intent(MultiWiiBT_menu.this, Config.class);
+			//MultiWiiBT_menu.this.startActivity(myIntent);
 			break;
 
 		/*
@@ -126,30 +101,31 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener,
 	}
 
 	@Override
-	public void onAccuracyChanged(Sensor arg0, int arg1) {
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.option_menu, menu);
+	    return true;
 	}
-
+	
 	@Override
-	public void onSensorChanged(SensorEvent sensorEvent) {
-		synchronized (this) {
-			if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-				int x = Math.round(sensorEvent.values[0]);
-				int y = Math.round(sensorEvent.values[1]);
-				int z = Math.round(sensorEvent.values[2]);
-				accX = String.valueOf((int) (Math.abs(x)));
-				accY = String.valueOf((int) (Math.abs(y)));
-				accZ = String.valueOf((int) (Math.abs(z)));
-			}
-
-			if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
-				int x = Math.round(sensorEvent.values[0]);
-				int y = Math.round(sensorEvent.values[1]);
-				int z = Math.round(sensorEvent.values[2]);
-				pitch = String.valueOf((int) (Math.abs(x)));
-				roll = String.valueOf((int)  (Math.abs(y)));
-				yaw = String.valueOf((int)   (Math.abs(z)));
-
-			}
-		}
-	}
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	    case R.id.scan:
+	    	Toast.makeText(this,
+	    			 "Procurar um device Bluetooth!",
+	    			 Toast.LENGTH_LONG).show();
+	        //newGame();
+	        return true;
+	    case R.id.discoverable:
+//	        showHelp();
+	    	Toast.makeText(this,
+	    			 "TBD",
+	    			 Toast.LENGTH_LONG).show();
+	        return true;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
+	}	
+	
 }
