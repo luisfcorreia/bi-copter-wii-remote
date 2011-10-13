@@ -2,9 +2,9 @@ package net.loide.games.bicopter;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.Menu;
@@ -17,10 +17,9 @@ import android.widget.Toast;
 
 public class MultiWiiBT_menu extends Activity implements OnClickListener {
 
-	public BluetoothAdapter mBluetoothAdapter;
-	public static BluetoothDevice device;
 	public static String remote_device_mac = "";
-	public static final int REQUEST_CODE = 0xdeadbeef;
+	public static String MY_PREFS_FILE_NAME = "multiwiibt.conf";
+	public static SharedPreferences prefs;
 
 	// Intent request codes
 	private static final int REQUEST_CONNECT_DEVICE = 1;
@@ -35,6 +34,13 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
+		prefs = new ObscuredSharedPreferences(this, this.getSharedPreferences(
+				MY_PREFS_FILE_NAME, Context.MODE_PRIVATE));
+		/*
+		 * example new value prefs.edit().putString("foo", "bar").commit();
+		 */
+		prefs.getString("remote_device", "");
+
 		Button button1 = (Button) findViewById(R.id.startgameBtn);
 		Button button2 = (Button) findViewById(R.id.configBtn);
 		Button button3 = (Button) findViewById(R.id.exitBtn);
@@ -48,7 +54,7 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 		vibrator.cancel();
 
 		// Get local Bluetooth adapter
-		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 		// If the adapter is null, then Bluetooth is not supported
 		if (mBluetoothAdapter == null) {
@@ -58,32 +64,24 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 			return;
 		}
 
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-
 		// If BT is not on, request that it be enabled.
-		// setupChat() will then be called during onActivityResult
 		if (!mBluetoothAdapter.isEnabled()) {
 			Intent enableIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
 		}
+		
+		
 	}
 
 	public void onClick(View v) {
 		Intent myIntent;
 		switch (v.getId()) {
 		case R.id.startgameBtn:
-			// handle button A click;
-
-			// Intent myIntent = new Intent(MultiWiiBT_menu.this,
-			// Bluetest.class);
 
 			if (remote_device_mac == "") {
-				Toast.makeText(this,"Seleccione um dispositivo Bluetooth!", Toast.LENGTH_LONG).show();
+				Toast.makeText(this, "Seleccione um dispositivo Bluetooth!",
+						Toast.LENGTH_LONG).show();
 			} else {
 
 				myIntent = new Intent(MultiWiiBT_menu.this, Controller.class);
@@ -99,20 +97,6 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 			// myIntent = new Intent(MultiWiiBT_menu.this, Config.class);
 			// MultiWiiBT_menu.this.startActivity(myIntent);
 			break;
-
-		/*
-		 * 
-		 * if (scannedText.compareTo("") == 0) { Toast.makeText(this,
-		 * "Primeiro tem que ler o código de barras!",
-		 * Toast.LENGTH_LONG).show();
-		 * 
-		 * } else {
-		 * 
-		 * // enviar mensagem para o servidor passar ao estado Jogo
-		 * 
-		 * Intent myIntent = new Intent(Entrymenu.this, Battlefield.class);
-		 * Entrymenu.this.startActivity(myIntent); break; }
-		 */
 
 		case R.id.exitBtn:
 			// handle button B click;
@@ -140,10 +124,12 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 					REQUEST_CONNECT_DEVICE);
 			// newGame();
 			return true;
-		case R.id.discoverable:
+/*
+  		case R.id.discoverable:
 			// showHelp();
 			Toast.makeText(this, "TBD", Toast.LENGTH_LONG).show();
 			return true;
+*/
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -155,16 +141,17 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 			// When DeviceListActivity returns with a device to connect
 			if (resultCode == Activity.RESULT_OK) {
 				// Get the device MAC address
-				String address = data.getExtras().getString(
+				remote_device_mac = data.getExtras().getString(
 						BTDeviceList.EXTRA_DEVICE_ADDRESS);
-				remote_device_mac = address;
-				// Get the BLuetoothDevice object
-				Toast.makeText(this,
-						"Bluetooth device address " + remote_device_mac,
-						Toast.LENGTH_SHORT).show();
-				device = mBluetoothAdapter.getRemoteDevice(address);
-				// Attempt to connect to the device
-				// mChatService.connect(device);
+
+				// Save preference in config file
+				prefs.edit().putString("remote_device", remote_device_mac)
+						.commit();
+
+				Toast.makeText(
+						this,
+						"Bluetooth device address " + remote_device_mac
+								+ " saved.", Toast.LENGTH_SHORT).show();
 			}
 			break;
 		case REQUEST_ENABLE_BT:
