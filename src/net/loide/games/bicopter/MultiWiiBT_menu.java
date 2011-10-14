@@ -20,6 +20,7 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 	public static String remote_device_mac = "";
 	public static String MY_PREFS_FILE_NAME = "multiwiibt.conf";
 	public static SharedPreferences prefs;
+	public static String UI_VERSION = "0.1";
 
 	// Intent request codes
 	private static final int REQUEST_CONNECT_DEVICE = 1;
