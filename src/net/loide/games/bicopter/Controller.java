@@ -30,8 +30,17 @@ public class Controller extends Activity implements OnTouchListener,
 	private TBlue bt;
 	private String mac = "";
 	private boolean running = false;
-	private int BT_SEND_DELAY = 1;
-	
+	private int BT_SEND_DELAY = 100;
+
+	private int circleSize = 32;
+	private float lX = 150;
+	private float lY = 480 - circleSize;
+
+	public int mThr = 0;
+	public int mYaw = 0;
+	public int mPit = 0;
+	public int mRol = 0;
+
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(new MyView(this));
@@ -63,9 +72,6 @@ public class Controller extends Activity implements OnTouchListener,
 
 		private Canvas mCanvas;
 
-		private int circleSize = 32;
-		private float lX = 150;
-		private float lY = 480 - circleSize;
 		/*
 		 * private float rX = 625; private float rY = 240;
 		 */
@@ -167,7 +173,6 @@ public class Controller extends Activity implements OnTouchListener,
 						if (dx1 >= TOUCH_TOLERANCE || dy1 >= TOUCH_TOLERANCE) {
 							lX = x;
 							lY = y;
-							// bt.write(Float.toString(lY));
 						}
 					}
 				}
@@ -176,8 +181,6 @@ public class Controller extends Activity implements OnTouchListener,
 
 			case MotionEvent.ACTION_UP:
 				lX = 150;
-				// bt.write(Float.toString(lY));
-				// lY = 480 - circleSize;
 				invalidate();
 				break;
 			}
@@ -269,11 +272,19 @@ public class Controller extends Activity implements OnTouchListener,
 		public void run() {
 			if (running) {
 
-				bt.write("yo!");
+				mThr = (int) (Math.abs(lY - 480) * 100 / 480);
+				mYaw = (int) lX * 100 / 300;
+				mPit = (int) 50;
+				mRol = (int) 50;
+/*				
+	      rcData[THROTTLE] = (Serial.read() * 5) + 900;
+	      rcData[ROLL]     = (Serial.read() * 5) + 900;
+	      rcData[PITCH]    = (Serial.read() * 5) + 900;
+	      rcData[YAW]      = (Serial.read() * 5) + 900;
+*/				
+				bt.write("Z" + mThr + mRol + mPit + mYaw);
 				mHandler.postDelayed(CommLink, BT_SEND_DELAY);
 			}
 		}
-
 	};
-
 }
