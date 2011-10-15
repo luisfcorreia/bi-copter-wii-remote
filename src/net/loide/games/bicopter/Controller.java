@@ -20,17 +20,11 @@ public class Controller extends Activity implements OnTouchListener,
 		SensorEventListener {
 
 	// Unique UUID for this application
-	public static String pitch;
-	public static String roll;
-	public static String yaw;
-	public static String accX;
-	public static String accY;
-	public static String accZ;
 	private SensorManager sensorManager = null;
 	private TBlue bt;
 	private String mac = "";
 	private boolean running = false;
-	private int BT_SEND_DELAY = 100;
+	private int BT_SEND_DELAY = 50;
 
 	private int circleSize = 32;
 	private float lX = 150;
@@ -40,6 +34,10 @@ public class Controller extends Activity implements OnTouchListener,
 	public int mYaw = 0;
 	public int mPit = 0;
 	public int mRol = 0;
+	public float base_mPit = 0;
+	public float base_mRol = 0;
+	public int pitch;
+	public int roll;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -119,12 +117,6 @@ public class Controller extends Activity implements OnTouchListener,
 			mPaint.setColor(0xFFFFFFFF);
 			canvas.drawText("Pitch  : " + pitch, 310, 120, mPaint);
 			canvas.drawText("Roll    : " + roll, 310, 140, mPaint);
-			canvas.drawText("Yaw    : " + yaw, 310, 160, mPaint);
-
-			mPaint.setColor(0xFFFFFFFF);
-			canvas.drawText("accX   : " + accX, 310, 180, mPaint);
-			canvas.drawText("accY   : " + accY, 310, 200, mPaint);
-			canvas.drawText("accZ   : " + accZ, 310, 220, mPaint);
 
 			canvas.drawText("BlueT  : " + bt.read(), 310, 240, mPaint);
 
@@ -142,11 +134,13 @@ public class Controller extends Activity implements OnTouchListener,
 			canvas.drawLine(680, 260, 680, 460, mPaint);
 			canvas.drawLine(580, 360, 780, 360, mPaint);
 
+			// desenhar posição calculada dos sticks
 			mPaint.setStyle(Paint.Style.FILL);
 			mPaint.setColor(0xFFCDE3A1);
-			canvas.drawCircle(460, 360, circleSize / 2, mPaint);
-			canvas.drawCircle(680, 360, circleSize / 2, mPaint);
-
+			canvas.drawCircle(360 + (mYaw * 2),
+					Math.abs(260 + (200 - (mThr * 2))), circleSize / 2, mPaint);
+			canvas.drawCircle(580 + (mRol * 2),
+					Math.abs(260 + (200 - (mPit * 2))), circleSize / 2, mPaint);
 		}
 
 		public boolean onTouchEvent(MotionEvent event) {
@@ -160,6 +154,8 @@ public class Controller extends Activity implements OnTouchListener,
 					if ((y > 0) && (y < 480)) {
 						lX = x;
 						lY = y;
+						base_mPit = pitch;
+						base_mRol = roll;
 					}
 				}
 				invalidate();
@@ -173,6 +169,8 @@ public class Controller extends Activity implements OnTouchListener,
 						if (dx1 >= TOUCH_TOLERANCE || dy1 >= TOUCH_TOLERANCE) {
 							lX = x;
 							lY = y;
+							mPit = (int) (base_mPit - pitch) + 50;
+							mRol = (int) (base_mRol - roll) + 50;
 						}
 					}
 				}
@@ -181,6 +179,10 @@ public class Controller extends Activity implements OnTouchListener,
 
 			case MotionEvent.ACTION_UP:
 				lX = 150;
+				base_mPit = 50;
+				base_mRol = 50;
+				mPit = 50;
+				mRol = 50;
 				invalidate();
 				break;
 			}
@@ -188,6 +190,7 @@ public class Controller extends Activity implements OnTouchListener,
 			// dumpEvent(event);
 			// Log.d(TAG, "Left:" + lX + " " + lY );
 
+			invalidate();
 			return true;
 		}
 
@@ -199,26 +202,6 @@ public class Controller extends Activity implements OnTouchListener,
 			return mCanvas;
 		}
 
-		/** Show an event in the LogCat view, for debugging */
-
-		/*
-		 * private void dumpEvent(MotionEvent event) { String names[] = {
-		 * "DOWN", "UP", "MOVE", "CANCEL", "OUTSIDE", "POINTER_DOWN",
-		 * "POINTER_UP", "7?", "8?", "9?" }; StringBuilder sb = new
-		 * StringBuilder(); int action = event.getAction(); int actionCode =
-		 * action & MotionEvent.ACTION_MASK;
-		 * sb.append("event ACTION_").append(names[actionCode]); if (actionCode
-		 * == MotionEvent.ACTION_POINTER_DOWN || actionCode ==
-		 * MotionEvent.ACTION_POINTER_UP) { sb.append("(pid ").append( action >>
-		 * MotionEvent.ACTION_POINTER_ID_SHIFT); sb.append(")"); }
-		 * sb.append("["); for (int i = 0; i < event.getPointerCount(); i++) {
-		 * sb.append("#").append(i);
-		 * sb.append("(pid ").append(event.getPointerId(i));
-		 * sb.append(")=").append((int) event.getX(i));
-		 * sb.append(",").append((int) event.getY(i)); if (i + 1 <
-		 * event.getPointerCount()) sb.append(";"); } sb.append("]"); Log.d(TAG,
-		 * sb.toString()); }
-		 */
 	}
 
 	@Override
@@ -244,22 +227,9 @@ public class Controller extends Activity implements OnTouchListener,
 	}
 
 	public void onSensorChanged(SensorEvent sensorEvent) {
-		if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-			int x = Math.round(sensorEvent.values[0]);
-			int y = Math.round(sensorEvent.values[1]);
-			int z = Math.round(sensorEvent.values[2]);
-			accX = String.valueOf((int) (Math.abs(x)));
-			accY = String.valueOf((int) (Math.abs(y)));
-			accZ = String.valueOf((int) (Math.abs(z)));
-		}
-
 		if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
-			int x = Math.round(sensorEvent.values[0]);
-			int y = Math.round(sensorEvent.values[1]);
-			int z = Math.round(sensorEvent.values[2]);
-			pitch = String.valueOf((int) (Math.abs(x)));
-			roll = String.valueOf((int) (Math.abs(y)));
-			yaw = String.valueOf((int) (Math.abs(z)));
+			roll = Math.round(sensorEvent.values[1]);
+			pitch = Math.round(sensorEvent.values[2]);
 		}
 	}
 
@@ -274,15 +244,13 @@ public class Controller extends Activity implements OnTouchListener,
 
 				mThr = (int) (Math.abs(lY - 480) * 100 / 480);
 				mYaw = (int) lX * 100 / 300;
+/*
 				mPit = (int) 50;
 				mRol = (int) 50;
-/*				
-	      rcData[THROTTLE] = (Serial.read() * 5) + 900;
-	      rcData[ROLL]     = (Serial.read() * 5) + 900;
-	      rcData[PITCH]    = (Serial.read() * 5) + 900;
-	      rcData[YAW]      = (Serial.read() * 5) + 900;
-*/				
-				bt.write("Z" + mThr + mRol + mPit + mYaw);
+*/
+				bt.write("Z" + (char) (mThr * 255 / 100)
+						+ (char) (mRol * 255 / 100) + (char) (mPit * 255 / 100)
+						+ (char) (mYaw * 255 / 100));
 				mHandler.postDelayed(CommLink, BT_SEND_DELAY);
 			}
 		}
