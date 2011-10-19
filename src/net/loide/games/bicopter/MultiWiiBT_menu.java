@@ -18,7 +18,7 @@ import android.widget.Toast;
 public class MultiWiiBT_menu extends Activity implements OnClickListener {
 
 	public static String remote_device_mac = "";
-	public static String MY_PREFS_FILE_NAME = "multiwiibt.conf";
+	public static String MY_PREFS_FILE_NAME = "net.loide.games.bicopter.multiwiibt.conf";
 	public static SharedPreferences prefs;
 	public static String UI_VERSION = "0.1";
 
@@ -40,7 +40,15 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 		/*
 		 * example new value prefs.edit().putString("foo", "bar").commit();
 		 */
-		prefs.getString("remote_device", "");
+		remote_device_mac = prefs.getString("remote_device", "");
+
+		if (remote_device_mac != "") {
+			Toast.makeText(
+					this,
+					"Bluetooth device " + remote_device_mac
+							+ " read from config file.", Toast.LENGTH_SHORT)
+					.show();
+		}
 
 		Button button1 = (Button) findViewById(R.id.startgameBtn);
 		Button button2 = (Button) findViewById(R.id.configBtn);
@@ -55,7 +63,8 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 		vibrator.cancel();
 
 		// Get local Bluetooth adapter
-		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter
+				.getDefaultAdapter();
 
 		// If the adapter is null, then Bluetooth is not supported
 		if (mBluetoothAdapter == null) {
@@ -71,15 +80,12 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
 		}
-		
-		
 	}
 
 	public void onClick(View v) {
 		Intent myIntent;
 		switch (v.getId()) {
 		case R.id.startgameBtn:
-
 			if (remote_device_mac == "") {
 				Toast.makeText(this, "Seleccione um dispositivo Bluetooth!",
 						Toast.LENGTH_LONG).show();
@@ -125,12 +131,10 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 					REQUEST_CONNECT_DEVICE);
 			// newGame();
 			return true;
-/*
-  		case R.id.discoverable:
-			// showHelp();
-			Toast.makeText(this, "TBD", Toast.LENGTH_LONG).show();
-			return true;
-*/
+			/*
+			 * case R.id.discoverable: // showHelp(); Toast.makeText(this,
+			 * "TBD", Toast.LENGTH_LONG).show(); return true;
+			 */
 		default:
 			return super.onOptionsItemSelected(item);
 		}
