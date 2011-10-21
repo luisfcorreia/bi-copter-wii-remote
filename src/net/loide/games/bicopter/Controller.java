@@ -34,10 +34,13 @@ public class Controller extends Activity implements OnTouchListener,
 	public int mYaw = 0;
 	public int mPit = 0;
 	public int mRol = 0;
+	public int mAux = 0;
 	public float base_mPit = 0;
 	public float base_mRol = 0;
 	public int pitch;
 	public int roll;
+	public int arm = 0;
+	public int prearm = 0;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -110,8 +113,11 @@ public class Controller extends Activity implements OnTouchListener,
 			canvas.drawRect(600, 70, 800, 130, mPaint);
 			mPaint.setTextSize(42);
 			mPaint.setColor(0xFF00FF00);
-			canvas.drawText("--ARM---", 610, 115, mPaint);
-			canvas.drawText("-DISARM-", 610, 115, mPaint);
+			if (arm == 1) {
+				canvas.drawText("--ARM---", 610, 115, mPaint);
+			} else {
+				canvas.drawText("-DISARM-", 610, 115, mPaint);
+			}
 
 			mPaint.setTextSize(20);
 			mPaint.setColor(0xFFFFFFFF);
@@ -158,6 +164,11 @@ public class Controller extends Activity implements OnTouchListener,
 						base_mRol = roll;
 					}
 				}
+				if ((x > 600) && (x < 800)) {
+					if ((y > 70) && (y < 130)) {
+						prearm = 1;
+					}
+				}
 				invalidate();
 				break;
 
@@ -183,6 +194,18 @@ public class Controller extends Activity implements OnTouchListener,
 				base_mRol = 50;
 				mPit = 50;
 				mRol = 50;
+
+				if ((prearm == 1) && (x > 600) && (x < 800)) {
+					if ((y > 70) && (y < 130)) {
+						prearm = 0;
+						if (arm == 0) {
+							arm = 1;
+						} else {
+							arm = 0;
+						}
+					}
+				}
+
 				invalidate();
 				break;
 			}
@@ -238,19 +261,21 @@ public class Controller extends Activity implements OnTouchListener,
 
 	private Handler mHandler = new Handler();
 	private Runnable CommLink = new Runnable() {
+		private String data = "";
 
 		public void run() {
 			if (running) {
 
 				mThr = (int) (Math.abs(lY - 480) * 100 / 480);
 				mYaw = (int) lX * 100 / 300;
-/*
-				mPit = (int) 50;
-				mRol = (int) 50;
-*/
-				bt.write("Z" + (char) (mThr * 255 / 100)
+				mAux = (int) (arm * 100);
+				/*
+				 * mPit = (int) 50; mRol = (int) 50;
+				 */
+				data = "Z" + (char) (mThr * 255 / 100)
 						+ (char) (mRol * 255 / 100) + (char) (mPit * 255 / 100)
-						+ (char) (mYaw * 255 / 100));
+						+ (char) (mYaw * 255 / 100) + (char) (mAux * 255 / 100);
+				bt.write(data);
 				mHandler.postDelayed(CommLink, BT_SEND_DELAY);
 			}
 		}
