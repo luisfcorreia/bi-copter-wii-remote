@@ -173,6 +173,9 @@ public class Controller extends Activity implements OnTouchListener,
 				break;
 
 			case MotionEvent.ACTION_MOVE:
+				int maxP;
+				int maxR;
+				int fifty = 50;
 				if ((x > 0) && (x < 300)) {
 					if ((y > 0) && (y < 480)) {
 						dx1 = Math.abs(x - lX);
@@ -180,8 +183,22 @@ public class Controller extends Activity implements OnTouchListener,
 						if (dx1 >= TOUCH_TOLERANCE || dy1 >= TOUCH_TOLERANCE) {
 							lX = x;
 							lY = y;
-							mPit = (int) (base_mPit - pitch) + 50;
-							mRol = (int) (base_mRol - roll) + 50;
+							maxP = (int) (base_mPit - pitch);
+							maxR = (int) (base_mRol - roll);
+							if (maxP > fifty) {
+								maxP = fifty;
+							}
+							if (maxP < -fifty) {
+								maxP = -fifty;
+							}
+							if (maxR > fifty) {
+								maxR = fifty;
+							}
+							if (maxR < -fifty) {
+								maxR = -fifty;
+							}
+							mPit = maxP + fifty;
+							mRol = maxR + fifty;
 						}
 					}
 				}
