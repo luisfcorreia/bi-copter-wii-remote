@@ -289,7 +289,7 @@ public class Controller extends Activity implements OnTouchListener,
 				/*
 				 * mPit = (int) 50; mRol = (int) 50;
 				 */
-				data = "Z" + (char) (mThr * 255 / 100)
+				data = "K" + (char) (mThr * 255 / 100)
 						+ (char) (mRol * 255 / 100) + (char) (mPit * 255 / 100)
 						+ (char) (mYaw * 255 / 100) + (char) (mAux * 255 / 100);
 				bt.write(data);
