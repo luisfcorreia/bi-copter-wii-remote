@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.util.Log;
 
 public class Controller extends Activity implements OnTouchListener,
 		SensorEventListener {
@@ -24,23 +25,24 @@ public class Controller extends Activity implements OnTouchListener,
 	private TBlue bt;
 	private String mac = "";
 	private boolean running = false;
-	private int BT_SEND_DELAY = 50;
+	private int BT_SEND_DELAY = 10;
 
 	private int circleSize = 32;
 	private float lX = 150;
 	private float lY = 480 - circleSize;
 
-	public int mThr = 0;
-	public int mYaw = 0;
-	public int mPit = 0;
-	public int mRol = 0;
-	public int mAux = 0;
+	public int mThr = 50;
+	public int mYaw = 50;
+	public int mPit = 50;
+	public int mRol = 50;
+	public int mAux = 50;
 	public float base_mPit = 0;
 	public float base_mRol = 0;
 	public int pitch;
 	public int roll;
 	public int arm = 0;
 	public int prearm = 0;
+    String TAG="Controller";
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -59,7 +61,6 @@ public class Controller extends Activity implements OnTouchListener,
 
 		running = true;
 		CommLink.run();
-
 	}
 
 	private Paint mPaint;
@@ -72,13 +73,8 @@ public class Controller extends Activity implements OnTouchListener,
 	public class MyView extends View {
 
 		private Canvas mCanvas;
-
-		/*
-		 * private float rX = 625; private float rY = 240;
-		 */
 		private float x = 0, y = 0;
 		private float dx1 = 0, dy1 = 0;
-
 		private static final float TOUCH_TOLERANCE = 4;
 
 		public MyView(Context c) {
@@ -114,17 +110,15 @@ public class Controller extends Activity implements OnTouchListener,
 			mPaint.setTextSize(42);
 			mPaint.setColor(0xFF00FF00);
 			if (arm == 1) {
-				canvas.drawText("--ARM---", 610, 115, mPaint);
-			} else {
 				canvas.drawText("-DISARM-", 610, 115, mPaint);
+			} else {
+				canvas.drawText("--ARM---", 610, 115, mPaint);
 			}
 
 			mPaint.setTextSize(20);
 			mPaint.setColor(0xFFFFFFFF);
 			canvas.drawText("Pitch  : " + pitch, 310, 120, mPaint);
 			canvas.drawText("Roll    : " + roll, 310, 140, mPaint);
-
-			canvas.drawText("BlueT  : " + bt.read(), 310, 240, mPaint);
 
 			// desenhar stick esquerdo
 			mPaint.setColor(0xFFCDE3A1);
@@ -156,8 +150,8 @@ public class Controller extends Activity implements OnTouchListener,
 
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
-				if ((x > 0) && (x < 300)) {
-					if ((y > 0) && (y < 480)) {
+				if ((x > 1) && (x < 300)) {
+					if ((y > 1) && (y < 480)) {
 						lX = x;
 						lY = y;
 						base_mPit = pitch;
@@ -176,8 +170,8 @@ public class Controller extends Activity implements OnTouchListener,
 				int maxP;
 				int maxR;
 				int fifty = 50;
-				if ((x > 0) && (x < 300)) {
-					if ((y > 0) && (y < 480)) {
+				if ((x > 1) && (x < 300)) {
+					if ((y > 1) && (y < 480)) {
 						dx1 = Math.abs(x - lX);
 						dy1 = Math.abs(y - lY);
 						if (dx1 >= TOUCH_TOLERANCE || dy1 >= TOUCH_TOLERANCE) {
@@ -211,6 +205,7 @@ public class Controller extends Activity implements OnTouchListener,
 				base_mRol = 50;
 				mPit = 50;
 				mRol = 50;
+				mYaw = 50;
 
 				if ((prearm == 1) && (x > 600) && (x < 800)) {
 					if ((y > 70) && (y < 130)) {
@@ -222,14 +217,9 @@ public class Controller extends Activity implements OnTouchListener,
 						}
 					}
 				}
-
 				invalidate();
 				break;
 			}
-
-			// dumpEvent(event);
-			// Log.d(TAG, "Left:" + lX + " " + lY );
-
 			invalidate();
 			return true;
 		}
@@ -281,20 +271,26 @@ public class Controller extends Activity implements OnTouchListener,
 		private String data = "";
 
 		public void run() {
+			int mt, mr, mp, my, ma;
 			if (running) {
 
-				mThr = (int) (Math.abs(lY - 480) * 100 / 480);
-				mYaw = (int) lX * 100 / 300;
-				mAux = (int) (arm * 100);
-				/*
-				 * mPit = (int) 50; mRol = (int) 50;
-				 */
-				data = "K" + (char) (mThr * 255 / 100)
-						+ (char) (mRol * 255 / 100) + (char) (mPit * 255 / 100)
-						+ (char) (mYaw * 255 / 100) + (char) (mAux * 255 / 100);
+				mThr = (int) (Math.abs(lY - 480) * 99 / 480) + 1;
+				mYaw = (int) (lX * 99 / 300) + 1;
+				mAux = (int) (arm * 99) + 1;
+				mt = mThr * 255 / 100;
+				mr = mRol * 255 / 100;
+				mp = mPit * 255 / 100;
+				my = mYaw * 255 / 100;
+				ma = mAux * 255 / 100;
+
+				data = "K" + (char) mt + (char) mr + (char) mp + (char) my
+						+ (char) ma;
 				bt.write(data);
+
+				Log.i(TAG, "Throttle:"+mThr+" Yaw:"+mYaw+" Roll:"+mRol+" Pitch:"+mPit+" Aux1:"+mAux);
 				mHandler.postDelayed(CommLink, BT_SEND_DELAY);
 			}
 		}
 	};
+
 }

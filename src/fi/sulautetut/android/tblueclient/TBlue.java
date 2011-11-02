@@ -98,7 +98,7 @@
    
     public void write(String s) 
     {
-        Log.i(TAG, "Sending \""+s+"\"... "); 
+   //     Log.i(TAG, "Sending \""+s+"\"... "); 
         byte[] outBuffer= s.getBytes(); 
         try {
             outStream.write(outBuffer);
