@@ -23,6 +23,7 @@ public class Controller extends Activity implements OnTouchListener,
 	// Unique UUID for this application
 	private SensorManager sensorManager = null;
 	private TBlue bt;
+	private String bt_rd = "";
 	private String mac = "";
 	private boolean running = false;
 	private int BT_SEND_DELAY = 10;
@@ -119,6 +120,8 @@ public class Controller extends Activity implements OnTouchListener,
 			mPaint.setColor(0xFFFFFFFF);
 			canvas.drawText("Pitch  : " + pitch, 310, 120, mPaint);
 			canvas.drawText("Roll    : " + roll, 310, 140, mPaint);
+			
+			canvas.drawText("BlueT : " + bt_rd, 310, 240, mPaint);
 
 			// desenhar stick esquerdo
 			mPaint.setColor(0xFFCDE3A1);
@@ -286,6 +289,7 @@ public class Controller extends Activity implements OnTouchListener,
 				data = "K" + (char) mt + (char) mr + (char) mp + (char) my
 						+ (char) ma;
 				bt.write(data);
+				bt_rd = bt.read();
 
 				Log.i(TAG, "Throttle:"+mThr+" Yaw:"+mYaw+" Roll:"+mRol+" Pitch:"+mPit+" Aux1:"+mAux);
 				mHandler.postDelayed(CommLink, BT_SEND_DELAY);
