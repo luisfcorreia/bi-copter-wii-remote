@@ -1,6 +1,7 @@
 package net.loide.games.bicopter;
 
 import fi.sulautetut.android.tblueclient.TBlue;
+import java.util.LinkedList;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -43,7 +44,12 @@ public class Controller extends Activity implements OnTouchListener,
 	public int roll;
 	public int arm = 0;
 	public int prearm = 0;
-    String TAG="Controller";
+	String TAG = "Controller";
+	public MovingAverage Thr;
+	public MovingAverage Yaw;
+	public MovingAverage Pit;
+	public MovingAverage Rol;
+	public MovingAverage Aux;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -62,6 +68,11 @@ public class Controller extends Activity implements OnTouchListener,
 
 		running = true;
 		CommLink.run();
+		Thr.count = 5;
+		Yaw.count = 5;
+		Pit.count = 5;
+		Rol.count = 5;
+		Aux.count = 5;
 	}
 
 	private Paint mPaint;
@@ -120,7 +131,7 @@ public class Controller extends Activity implements OnTouchListener,
 			mPaint.setColor(0xFFFFFFFF);
 			canvas.drawText("Pitch  : " + pitch, 310, 120, mPaint);
 			canvas.drawText("Roll    : " + roll, 310, 140, mPaint);
-			
+
 			canvas.drawText("BlueT : " + bt_rd, 310, 240, mPaint);
 
 			// desenhar stick esquerdo
@@ -196,6 +207,8 @@ public class Controller extends Activity implements OnTouchListener,
 							}
 							mPit = maxP + fifty;
 							mRol = maxR + fifty;
+							Pit.pushValue(mPit);
+							Rol.pushValue(mRol);
 						}
 					}
 				}
@@ -209,6 +222,9 @@ public class Controller extends Activity implements OnTouchListener,
 				mPit = 50;
 				mRol = 50;
 				mYaw = 50;
+				Pit.pushValue(mPit);
+				Rol.pushValue(mRol);
+				Yaw.pushValue(mYaw);
 
 				if ((prearm == 1) && (x > 600) && (x < 800)) {
 					if ((y > 70) && (y < 130)) {
@@ -277,9 +293,20 @@ public class Controller extends Activity implements OnTouchListener,
 			int mt, mr, mp, my, ma;
 			if (running) {
 
-				mThr = (int) (Math.abs(lY - 480) * 99 / 480) + 1;
-				mYaw = (int) (lX * 99 / 300) + 1;
-				mAux = (int) (arm * 99) + 1;
+				/*
+				 * mThr = (int) (Math.abs(lY - 480) * 99 / 480) + 1; mYaw =
+				 * (int) (lX * 99 / 300) + 1; mAux = (int) (arm * 99) + 1;
+				 */
+				Thr.pushValue(Math.abs(lY - 480) * 100 / 480);
+				Yaw.pushValue(lX * 100 / 300);
+				Aux.pushValue((arm * 99) + 1);
+				
+				mThr = (int) Thr.getValue();
+				mYaw = (int) Yaw.getValue();
+				mAux = (int) Aux.getValue();
+				mRol = (int) Rol.getValue();
+				mPit = (int) Pit.getValue();
+
 				mt = mThr * 255 / 100;
 				mr = mRol * 255 / 100;
 				mp = mPit * 255 / 100;
@@ -291,10 +318,82 @@ public class Controller extends Activity implements OnTouchListener,
 				bt.write(data);
 				bt_rd = bt.read();
 
-				Log.i(TAG, "Throttle:"+mThr+" Yaw:"+mYaw+" Roll:"+mRol+" Pitch:"+mPit+" Aux1:"+mAux);
+				Log.i(TAG, "Throttle:" + mThr + " Yaw:" + mYaw + " Roll:"
+						+ mRol + " Pitch:" + mPit + " Aux1:" + mAux);
 				mHandler.postDelayed(CommLink, BT_SEND_DELAY);
 			}
 		}
 	};
 
+	/**
+	 * Simple Moving Average
+	 */
+
+    /**
+     * A simple moving average implementation.
+     *
+     * SMA (Simple moving average) sometimes called rolling average, or running average (mean).
+     * see: http://en.wikipedia.org/wiki/Moving_average.
+     *
+     * @author scottkirkwood
+     */
+    public class MovingAverage {
+        private float circularBuffer[];
+        private float mean;
+        private int circularIndex;
+        private int count;
+
+        public MovingAverage(int size) {
+            circularBuffer = new float[size];
+            reset();
+        }
+
+        /**
+         * Get the current moving average.
+         * @see com.forusers.android.filter.Filter#getValue()
+         */
+        public float getValue() {
+            return mean;
+        }
+
+        /**
+         * @see com.forusers.android.filter.Filter#pushValue(float)
+         */
+        public void pushValue(float x) {
+            if (count++ == 0) {
+                primeBuffer(x);
+            }
+            float lastValue = circularBuffer[circularIndex];
+            mean = mean + (x - lastValue) / circularBuffer.length;
+            circularBuffer[circularIndex] = x;
+            circularIndex = nextIndex(circularIndex);
+        }
+
+        /*
+         * @see com.forusers.android.filter.Filter#reset()
+         */
+        public void reset() {
+            count = 0;
+            circularIndex = 0;
+            mean = 0;
+        }
+
+        public long getCount() {
+            return count;
+        }
+
+        private void primeBuffer(float val) {
+            for (int i = 0; i < circularBuffer.length; ++i) {
+                circularBuffer[i] = val;
+            }
+            mean = val;
+        }
+
+        private int nextIndex(int curIndex) {
+            if (curIndex + 1 >= circularBuffer.length) {
+                return 0;
+            }
+            return curIndex + 1;
+        }
+    }
 }
