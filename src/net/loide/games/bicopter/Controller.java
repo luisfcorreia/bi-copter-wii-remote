@@ -1,7 +1,6 @@
 package net.loide.games.bicopter;
 
 import fi.sulautetut.android.tblueclient.TBlue;
-import java.util.LinkedList;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -26,14 +25,16 @@ public class Controller extends Activity implements OnTouchListener,
 	private TBlue bt;
 	private String bt_rd = "";
 	private String mac = "";
+
 	private boolean running = false;
 	private int BT_SEND_DELAY = 10;
+	private int ROLAVERAGE = 5;
 
 	private int circleSize = 32;
 	private float lX = 150;
 	private float lY = 480 - circleSize;
 
-	public int mThr = 50;
+	public int mThr = 1;
 	public int mYaw = 50;
 	public int mPit = 50;
 	public int mRol = 50;
@@ -45,13 +46,14 @@ public class Controller extends Activity implements OnTouchListener,
 	public int arm = 0;
 	public int prearm = 0;
 	String TAG = "Controller";
-	public MovingAverage Thr;
-	public MovingAverage Yaw;
-	public MovingAverage Pit;
-	public MovingAverage Rol;
-	public MovingAverage Aux;
+	public Rolling Thr;
+	public Rolling Yaw;
+	public Rolling Pit;
+	public Rolling Rol;
+	public Rolling Aux;
 
 	protected void onCreate(Bundle savedInstanceState) {
+		int i;
 		super.onCreate(savedInstanceState);
 		setContentView(new MyView(this));
 
@@ -65,14 +67,29 @@ public class Controller extends Activity implements OnTouchListener,
 
 		mac = MultiWiiBT_menu.remote_device_mac;
 		bt = new TBlue(mac);
+		Thr = new Rolling(5);
+		for (i = 1; i >= ROLAVERAGE; i++) {
+			Thr.add(1);
+		}
+		Yaw = new Rolling(5);
+		for (i = 1; i >= ROLAVERAGE; i++) {
+			Yaw.add(50);
+		}
+		Pit = new Rolling(5);
+		for (i = 1; i >= ROLAVERAGE; i++) {
+			Pit.add(50);
+		}
+		Rol = new Rolling(5);
+		for (i = 1; i >= ROLAVERAGE; i++) {
+			Rol.add(50);
+		}
+		Aux = new Rolling(5);
+		for (i = 1; i >= ROLAVERAGE; i++) {
+			Aux.add(1);
+		}
 
 		running = true;
 		CommLink.run();
-		Thr.count = 5;
-		Yaw.count = 5;
-		Pit.count = 5;
-		Rol.count = 5;
-		Aux.count = 5;
 	}
 
 	private Paint mPaint;
@@ -132,7 +149,7 @@ public class Controller extends Activity implements OnTouchListener,
 			canvas.drawText("Pitch  : " + pitch, 310, 120, mPaint);
 			canvas.drawText("Roll    : " + roll, 310, 140, mPaint);
 
-			canvas.drawText("BlueT : " + bt_rd, 310, 240, mPaint);
+			canvas.drawText(bt_rd, 310, 160, mPaint);
 
 			// desenhar stick esquerdo
 			mPaint.setColor(0xFFCDE3A1);
@@ -207,8 +224,16 @@ public class Controller extends Activity implements OnTouchListener,
 							}
 							mPit = maxP + fifty;
 							mRol = maxR + fifty;
-							Pit.pushValue(mPit);
-							Rol.pushValue(mRol);
+
+							mThr = (int) Math
+									.floor(Math.abs(lY - 480) * 100 / 480);
+							mYaw = (int) (lX * 100 / 300);
+
+							Thr.add(mThr);
+							Yaw.add(mYaw);
+
+							Pit.add(mPit);
+							Rol.add(mRol);
 						}
 					}
 				}
@@ -216,15 +241,23 @@ public class Controller extends Activity implements OnTouchListener,
 				break;
 
 			case MotionEvent.ACTION_UP:
+				int i;
+
 				lX = 150;
 				base_mPit = 50;
 				base_mRol = 50;
 				mPit = 50;
 				mRol = 50;
 				mYaw = 50;
-				Pit.pushValue(mPit);
-				Rol.pushValue(mRol);
-				Yaw.pushValue(mYaw);
+				for (i = 1; i >= ROLAVERAGE; i++) {
+					Yaw.add(50);
+				}
+				for (i = 1; i >= ROLAVERAGE; i++) {
+					Pit.add(50);
+				}
+				for (i = 1; i >= ROLAVERAGE; i++) {
+					Rol.add(50);
+				}
 
 				if ((prearm == 1) && (x > 600) && (x < 800)) {
 					if ((y > 70) && (y < 130)) {
@@ -297,103 +330,55 @@ public class Controller extends Activity implements OnTouchListener,
 				 * mThr = (int) (Math.abs(lY - 480) * 99 / 480) + 1; mYaw =
 				 * (int) (lX * 99 / 300) + 1; mAux = (int) (arm * 99) + 1;
 				 */
-				Thr.pushValue(Math.abs(lY - 480) * 100 / 480);
-				Yaw.pushValue(lX * 100 / 300);
-				Aux.pushValue((arm * 99) + 1);
-				
-				mThr = (int) Thr.getValue();
-				mYaw = (int) Yaw.getValue();
-				mAux = (int) Aux.getValue();
-				mRol = (int) Rol.getValue();
-				mPit = (int) Pit.getValue();
+				Thr.add(Math.floor(Math.abs(lY - 480) * 100 / 480));
+				Yaw.add(lX * 100 / 300);
+				Aux.add((arm * 99) + 1);
 
-				mt = mThr * 255 / 100;
-				mr = mRol * 255 / 100;
-				mp = mPit * 255 / 100;
-				my = mYaw * 255 / 100;
-				ma = mAux * 255 / 100;
+				mt = (int) Thr.getAverage() * 255 / 100;
+				my = (int) Yaw.getAverage() * 255 / 100;
+				mr = (int) Rol.getAverage() * 255 / 100;
+				mp = (int) Pit.getAverage() * 255 / 100;
+				ma = (int) Aux.getAverage() * 255 / 100;
 
 				data = "K" + (char) mt + (char) mr + (char) mp + (char) my
 						+ (char) ma;
 				bt.write(data);
+				/*
+				 * Log.i(TAG, "Throttle:" + mThr + " Yaw:" + mYaw + " Roll:" +
+				 * mRol + " Pitch:" + mPit + " Aux1:" + mAux);
+				 */
 				bt_rd = bt.read();
+				Log.i(TAG, bt_rd);
 
-				Log.i(TAG, "Throttle:" + mThr + " Yaw:" + mYaw + " Roll:"
-						+ mRol + " Pitch:" + mPit + " Aux1:" + mAux);
 				mHandler.postDelayed(CommLink, BT_SEND_DELAY);
 			}
 		}
 	};
 
-	/**
-	 * Simple Moving Average
-	 */
+	public class Rolling {
 
-    /**
-     * A simple moving average implementation.
-     *
-     * SMA (Simple moving average) sometimes called rolling average, or running average (mean).
-     * see: http://en.wikipedia.org/wiki/Moving_average.
-     *
-     * @author scottkirkwood
-     */
-    public class MovingAverage {
-        private float circularBuffer[];
-        private float mean;
-        private int circularIndex;
-        private int count;
+		private int size;
+		private double total = 0d;
+		private int index = 0;
+		private double samples[];
 
-        public MovingAverage(int size) {
-            circularBuffer = new float[size];
-            reset();
-        }
+		public Rolling(int size) {
+			this.size = size;
+			samples = new double[size];
+			for (int i = 0; i < size; i++)
+				samples[i] = 0d;
+		}
 
-        /**
-         * Get the current moving average.
-         * @see com.forusers.android.filter.Filter#getValue()
-         */
-        public float getValue() {
-            return mean;
-        }
+		public void add(double x) {
+			total -= samples[index];
+			samples[index] = x;
+			total += x;
+			if (++index == size)
+				index = 0; // cheaper than modulus
+		}
 
-        /**
-         * @see com.forusers.android.filter.Filter#pushValue(float)
-         */
-        public void pushValue(float x) {
-            if (count++ == 0) {
-                primeBuffer(x);
-            }
-            float lastValue = circularBuffer[circularIndex];
-            mean = mean + (x - lastValue) / circularBuffer.length;
-            circularBuffer[circularIndex] = x;
-            circularIndex = nextIndex(circularIndex);
-        }
-
-        /*
-         * @see com.forusers.android.filter.Filter#reset()
-         */
-        public void reset() {
-            count = 0;
-            circularIndex = 0;
-            mean = 0;
-        }
-
-        public long getCount() {
-            return count;
-        }
-
-        private void primeBuffer(float val) {
-            for (int i = 0; i < circularBuffer.length; ++i) {
-                circularBuffer[i] = val;
-            }
-            mean = val;
-        }
-
-        private int nextIndex(int curIndex) {
-            if (curIndex + 1 >= circularBuffer.length) {
-                return 0;
-            }
-            return curIndex + 1;
-        }
-    }
+		public double getAverage() {
+			return total / size;
+		}
+	}
 }
