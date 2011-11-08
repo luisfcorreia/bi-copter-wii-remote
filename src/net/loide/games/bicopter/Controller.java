@@ -27,7 +27,7 @@ public class Controller extends Activity implements OnTouchListener,
 	private String mac = "";
 
 	private boolean running = false;
-	private int BT_SEND_DELAY = 10;
+	private int BT_SEND_DELAY = 5;
 	private int ROLAVERAGE = 5;
 
 	private int circleSize = 32;
@@ -320,35 +320,39 @@ public class Controller extends Activity implements OnTouchListener,
 
 	private Handler mHandler = new Handler();
 	private Runnable CommLink = new Runnable() {
-		private String data = "";
 
 		public void run() {
 			int mt, mr, mp, my, ma;
 			if (running) {
 
-				/*
-				 * mThr = (int) (Math.abs(lY - 480) * 99 / 480) + 1; mYaw =
-				 * (int) (lX * 99 / 300) + 1; mAux = (int) (arm * 99) + 1;
-				 */
 				Thr.add(Math.floor(Math.abs(lY - 480) * 100 / 480));
 				Yaw.add(lX * 100 / 300);
 				Aux.add((arm * 99) + 1);
 
-				mt = (int) Thr.getAverage() * 255 / 100;
-				my = (int) Yaw.getAverage() * 255 / 100;
-				mr = (int) Rol.getAverage() * 255 / 100;
-				mp = (int) Pit.getAverage() * 255 / 100;
-				ma = (int) Aux.getAverage() * 255 / 100;
+				mt = (int) (Thr.getAverage() * 255 / 100);
+				my = (int) (Yaw.getAverage() * 255 / 100);
+				mr = (int) (Rol.getAverage() * 255 / 100);
+				mp = (int) (Pit.getAverage() * 255 / 100);
+				ma = (int) (Aux.getAverage() * 255 / 100);
+				
+				mt = 50;
+				my = 75;
+				mr = 150;
+				mp = 175;
+				ma = 200;
 
-				data = "K" + (char) mt + (char) mr + (char) mp + (char) my
-						+ (char) ma;
-				bt.write(data);
+				bt.write("K" + (char) mt);
+				bt.write("J" + (char) mr);
+				bt.write("H" + (char) mp);
+				bt.write("G" + (char) my);
+				bt.write("F" + (char) ma);
 				/*
 				 * Log.i(TAG, "Throttle:" + mThr + " Yaw:" + mYaw + " Roll:" +
 				 * mRol + " Pitch:" + mPit + " Aux1:" + mAux);
 				 */
-				bt_rd = bt.read();
-				Log.i(TAG, bt_rd);
+				// bt_rd = bt.read();
+				// Log.i(TAG, bt_rd);
+				bt.write("M");
 
 				mHandler.postDelayed(CommLink, BT_SEND_DELAY);
 			}
