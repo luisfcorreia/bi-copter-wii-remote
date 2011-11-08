@@ -27,7 +27,7 @@ public class Controller extends Activity implements OnTouchListener,
 	private String mac = "";
 
 	private boolean running = false;
-	private int BT_SEND_DELAY = 5;
+	private int BT_SEND_DELAY = 200;
 	private int ROLAVERAGE = 5;
 
 	private int circleSize = 32;
@@ -329,17 +329,11 @@ public class Controller extends Activity implements OnTouchListener,
 				Yaw.add(lX * 100 / 300);
 				Aux.add((arm * 99) + 1);
 
-				mt = (int) (Thr.getAverage() * 255 / 100);
-				my = (int) (Yaw.getAverage() * 255 / 100);
-				mr = (int) (Rol.getAverage() * 255 / 100);
-				mp = (int) (Pit.getAverage() * 255 / 100);
-				ma = (int) (Aux.getAverage() * 255 / 100);
-				
-				mt = 50;
-				my = 75;
-				mr = 150;
-				mp = 175;
-				ma = 200;
+				mt = (byte) (Thr.getAverage() * 255 / 100);
+				my = (byte) (Yaw.getAverage() * 255 / 100);
+				mr = (byte) (Rol.getAverage() * 255 / 100);
+				mp = (byte) (Pit.getAverage() * 255 / 100);
+				ma = (byte) (Aux.getAverage() * 255 / 100);
 
 				bt.write("K" + (char) mt);
 				bt.write("J" + (char) mr);
