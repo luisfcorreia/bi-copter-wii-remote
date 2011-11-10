@@ -326,7 +326,10 @@ public class Controller extends Activity implements OnTouchListener,
 			if (running) {
 
 				Thr.add(Math.floor(Math.abs(lY - 480) * 100 / 480));
-				Yaw.add(lX * 100 / 300);
+
+//				Yaw.add(lX * 100 / 300);
+				Yaw.add(lX - 150);
+
 				Aux.add((arm * 99) + 1);
 
 				mt = (byte) (Thr.getAverage() * 255 / 100);

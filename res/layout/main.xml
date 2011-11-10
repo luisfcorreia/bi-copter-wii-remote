@@ -1,42 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<AbsoluteLayout 
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="horizontal"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
-	
-	<ImageView 
-		android:id="@+id/fundo" 
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"		 
-        android:scaleType="centerInside"
-        android:background="@drawable/bk"
-        />
-	
-	<Button 
-		android:id="@+id/startgameBtn" 
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" 
-		android:text="Start Game"
-		android:layout_y="50px" 
-		android:layout_x="50px"
-		 />
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+   	android:background="#DBFCAC"
+   	android:layout_gravity="center_horizontal|center_vertical">
 
-	<Button 
-		android:id="@+id/exitBtn" 
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" 
-		android:text="Exit"
-		android:layout_y="360px" 
-		android:layout_x="700px"
-		 />
-	<Button 
-		android:id="@+id/configBtn" 
-		android:text="Config" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" 
-		android:layout_y="164dp"
-		android:layout_x="157dp" 
-		/>
+	        <TableLayout
+	            android:id="@+id/tableLayout1"
+	            android:layout_width="fill_parent"
+	            android:layout_height="fill_parent"
+	            android:layout_alignParentBottom="true" >
 
-</AbsoluteLayout>
+	            <TableRow
+	                android:id="@+id/tableRow1"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:layout_marginBottom="10dp"
+	                android:layout_marginLeft="100dp"
+	                android:layout_marginRight="100dp"
+	                android:layout_marginTop="20dp"
+	                android:background="#528B01" >
+
+	                <Button
+	                    android:id="@+id/startgameBtn"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="69dp"
+	                    android:layout_centerInParent="true"
+	                    android:background="@android:color/transparent"
+	                    android:gravity="left|center_horizontal|center_vertical"
+	                    android:text="Start Game"
+	                    android:textSize="25dp" />
+	            </TableRow>
+
+	            <TableRow
+	                android:id="@+id/tableRow3"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_marginBottom="10dp"
+	                android:layout_marginLeft="100dp"
+	                android:layout_marginRight="100dp"
+	                android:layout_marginTop="20dp"
+	                android:background="#528B01" >
+
+	                <Button
+	                    android:id="@+id/configBtn"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="69dp"
+	                    android:background="@android:color/transparent"
+	                    android:gravity="left|center_horizontal|center_vertical"
+	                    android:text="Config"
+	                    android:textSize="25dp" />
+	            </TableRow>
+
+	            <TableRow
+	                android:id="@+id/tableRow5"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_marginBottom="10dp"
+	                android:layout_marginLeft="100dp"
+	                android:layout_marginRight="100dp"
+	                android:layout_marginTop="20dp"
+	                android:background="#528B01" >
+
+	                <Button
+	                    android:id="@+id/exitBtn"
+	                    android:layout_width="match_parent"
+	                    android:layout_height="69dp"
+	                    android:background="@android:color/transparent"
+	                    android:gravity="left|center_horizontal|center_vertical"
+	                    android:text="Exit"
+	                    android:textSize="25dp" />
+	            </TableRow>
+	        </TableLayout>
+
+</RelativeLayout>
