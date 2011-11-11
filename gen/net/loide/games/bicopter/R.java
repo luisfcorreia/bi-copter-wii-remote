@@ -15,22 +15,29 @@ public final class R {
         public static final int icon=0x7f020001;
     }
     public static final class id {
-        public static final int MacAdress=0x7f060002;
-        public static final int btnConnect=0x7f060003;
-        public static final int button_scan=0x7f06000a;
-        public static final int configBtn=0x7f06000c;
-        public static final int discoverable=0x7f06000f;
-        public static final int exitBtn=0x7f06000d;
+        public static final int MacAdress=0x7f060003;
+        public static final int btnConnect=0x7f060005;
+        public static final int btnSave=0x7f060006;
+        public static final int button_scan=0x7f060011;
+        public static final int configBtn=0x7f060013;
+        public static final int discoverable=0x7f060016;
+        public static final int exitBtn=0x7f060014;
         public static final int linearLayout1=0x7f060000;
-        public static final int new_devices=0x7f060009;
-        public static final int paired_devices=0x7f060007;
-        public static final int scan=0x7f06000e;
-        public static final int seekBar1=0x7f060005;
-        public static final int startgameBtn=0x7f06000b;
-        public static final int stateConnected=0x7f060001;
-        public static final int textView1=0x7f060004;
-        public static final int title_new_devices=0x7f060008;
-        public static final int title_paired_devices=0x7f060006;
+        public static final int linearLayout2=0x7f060001;
+        public static final int linearLayout3=0x7f060004;
+        public static final int new_devices=0x7f060010;
+        public static final int paired_devices=0x7f06000e;
+        public static final int sbPitch=0x7f06000a;
+        public static final int sbRoll=0x7f06000c;
+        public static final int sbYAW=0x7f060008;
+        public static final int scan=0x7f060015;
+        public static final int startgameBtn=0x7f060012;
+        public static final int stateConnected=0x7f060002;
+        public static final int title_new_devices=0x7f06000f;
+        public static final int title_paired_devices=0x7f06000d;
+        public static final int tvPitch=0x7f060009;
+        public static final int tvRoll=0x7f06000b;
+        public static final int tvYAW=0x7f060007;
     }
     public static final class layout {
         public static final int config=0x7f030000;

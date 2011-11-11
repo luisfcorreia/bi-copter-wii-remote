@@ -53,9 +53,9 @@ public class Controller extends Activity implements OnTouchListener,
 	public Rolling Pit;
 	public Rolling Rol;
 	public Rolling Aux;
-	public int aPit = 50;
-	public int aRol = 50;
-	public int aYaw = 50;
+	public static int aPit;
+	public static int aRol;
+	public static int aYaw;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		int i;
@@ -74,7 +74,7 @@ public class Controller extends Activity implements OnTouchListener,
 		/*
 		 * example new value prefs.edit().putString("foo", "bar").commit();
 		 */
-		mac = prefs.getString("remote_device", "");
+		mac  = prefs.getString("remote_device", "");
 		aYaw = prefs.getInt("yaw_percent", 50);
 		aRol = prefs.getInt("pitch_percent", 50);
 		aPit = prefs.getInt("roll_percent", 50);
