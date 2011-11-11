@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+   	android:background="#DBFCAC"
+   	android:layout_gravity="center_horizontal|center_vertical">
+
+	            <LinearLayout
+	                android:id="@+id/linearLayout1"
+	                android:layout_width="match_parent"
+	                android:layout_height="match_parent"
+	                android:layout_weight="1.25"
+	                android:orientation="vertical" >
+
+	                <Button
+	                    android:id="@+id/startgameBtn"
+	                    android:layout_width="186dp"
+	                    android:layout_height="82dp"
+	                    android:layout_centerInParent="true"
+	                    android:layout_gravity="center_horizontal"
+	                    android:layout_marginBottom="10dp"
+	                    android:layout_marginLeft="100dp"
+	                    android:layout_marginRight="100dp"
+	                    android:layout_marginTop="10dp"
+	                    android:background="@drawable/custom_button"
+	                    android:gravity="center_horizontal|center_vertical"
+	                    android:text="Start Game"
+	                    android:textSize="25dp" />
+
+	                <Button
+	                    android:id="@+id/configBtn"
+	                    android:layout_width="186dp"
+	                    android:layout_height="82dp"
+	                    android:layout_gravity="center_horizontal"
+	                    android:layout_marginBottom="10dp"
+	                    android:layout_marginLeft="100dp"
+	                    android:layout_marginRight="100dp"
+	                    android:layout_marginTop="10dp"
+	                    android:background="@drawable/custom_button"
+	                    android:gravity="center_horizontal|center_vertical"
+	                    android:text="Config"
+	                    android:textSize="25dp" />
+
+	                <Button
+	                    android:id="@+id/exitBtn"
+	                    android:layout_width="186dp"
+	                    android:layout_height="82dp"
+	                    android:layout_gravity="center_horizontal"
+	                    android:layout_marginBottom="10dp"
+	                    android:layout_marginLeft="100dp"
+	                    android:layout_marginRight="100dp"
+	                    android:layout_marginTop="10dp"
+	                    android:background="@drawable/custom_button"
+	                    android:gravity="center_horizontal|center_vertical"
+	                    android:text="Exit"
+	                    android:textSize="25dp" 	
+	                    />
+	            </LinearLayout>
+	       
+</AbsoluteLayout>
