@@ -20,7 +20,11 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 	public static String remote_device_mac = "";
 	public static String MY_PREFS_FILE_NAME = "net.loide.games.bicopter.multiwiibt.conf";
 	public static SharedPreferences prefs;
+<<<<<<< HEAD
 	public static String UI_VERSION = "0.2";
+=======
+	public static String UI_VERSION = "0.1";
+>>>>>>> fd95226ab9978181efe29f30dc826a6ca480b1ba
 
 	// Intent request codes
 	private static final int REQUEST_CONNECT_DEVICE = 1;
@@ -97,9 +101,18 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 			break;
 
 		case R.id.configBtn:
+<<<<<<< HEAD
 			 
 			 myIntent = new Intent(MultiWiiBT_menu.this, Config.class);
 			 MultiWiiBT_menu.this.startActivity(myIntent);
+=======
+			// handle button A click;
+
+			// Intent myIntent = new Intent(MultiWiiBT_menu.this,
+			// Bluetest.class);
+			// myIntent = new Intent(MultiWiiBT_menu.this, Config.class);
+			// MultiWiiBT_menu.this.startActivity(myIntent);
+>>>>>>> fd95226ab9978181efe29f30dc826a6ca480b1ba
 			break;
 
 		case R.id.exitBtn:

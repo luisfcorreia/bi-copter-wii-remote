@@ -63,6 +63,10 @@ public class BTDeviceList extends Activity {
         // Setup the window
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.device_list);
+<<<<<<< HEAD
+=======
+
+>>>>>>> fd95226ab9978181efe29f30dc826a6ca480b1ba
         // Set result CANCELED in case the user backs out
         setResult(Activity.RESULT_CANCELED);
 
@@ -70,9 +74,14 @@ public class BTDeviceList extends Activity {
         Button scanButton = (Button) findViewById(R.id.button_scan);
         scanButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
+<<<<<<< HEAD
             	v.setVisibility(View.GONE);
             	doDiscovery();
                 
+=======
+                doDiscovery();
+                v.setVisibility(View.GONE);
+>>>>>>> fd95226ab9978181efe29f30dc826a6ca480b1ba
             }
         });
 

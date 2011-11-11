@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
@@ -58,4 +59,46 @@
 	                    />
 	            </LinearLayout>
 	       
+=======
+<AbsoluteLayout 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	
+	<ImageView 
+		android:id="@+id/fundo" 
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"		 
+        android:scaleType="centerInside"
+        android:background="@drawable/bk"
+        />
+	
+	<Button 
+		android:id="@+id/startgameBtn" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:text="Start Game"
+		android:layout_y="50px" 
+		android:layout_x="50px"
+		 />
+
+	<Button 
+		android:id="@+id/exitBtn" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:text="Exit"
+		android:layout_y="360px" 
+		android:layout_x="700px"
+		 />
+	<Button 
+		android:id="@+id/configBtn" 
+		android:text="Config" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:layout_y="164dp"
+		android:layout_x="157dp" 
+		/>
+
+>>>>>>> fd95226ab9978181efe29f30dc826a6ca480b1ba
 </AbsoluteLayout>

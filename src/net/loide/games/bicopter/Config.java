@@ -2,6 +2,7 @@ package net.loide.games.bicopter;
 
 
 import android.app.Activity;
+<<<<<<< HEAD
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -83,5 +84,11 @@ public class Config extends Activity implements OnClickListener{
 			}
 		}
 	}
+=======
+
+public class Config extends Activity {
+
+
+>>>>>>> fd95226ab9978181efe29f30dc826a6ca480b1ba
 	
 }
