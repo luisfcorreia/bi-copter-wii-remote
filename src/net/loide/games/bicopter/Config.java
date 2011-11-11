@@ -32,21 +32,22 @@ public class Config extends Activity implements OnClickListener {
 		TextView tvstate = (TextView) this.findViewById(R.id.stateConnected);
 		TextView tvmac = (TextView) this.findViewById(R.id.MacAdress);
 
-
-
 		if (MultiWiiBT_menu.prefs.getString("remote_device", "") == "")
 			tvstate.setText("Not Connected");
 		else {
 			tvstate.setText("Connected to: ");
 			tvmac.setText(MultiWiiBT_menu.remote_device_mac);
-			
+
+			MultiWiiBT_menu.remote_device_mac = MultiWiiBT_menu.prefs
+					.getString("remote_device", "");
+
 			Controller.aYaw = MultiWiiBT_menu.prefs.getInt("yaw_percent", 50);
 			Controller.aPit = MultiWiiBT_menu.prefs.getInt("pitch_percent", 50);
-			Controller.aRol = MultiWiiBT_menu.prefs.getInt("rol_percent", 50);
+			Controller.aRol = MultiWiiBT_menu.prefs.getInt("roll_percent", 50);
 			sbYAW.setProgress(Controller.aYaw);
 			sbPitch.setProgress(Controller.aPit);
 			sbRoll.setProgress(Controller.aRol);
-			
+
 		}
 	}
 
@@ -105,18 +106,12 @@ public class Config extends Activity implements OnClickListener {
 					.edit()
 					.putString("remote_device",
 							MultiWiiBT_menu.remote_device_mac).commit();
-			MultiWiiBT_menu.prefs
-					.edit()
-					.putInt("yaw_percent",
-							Controller.aYaw).commit();
-			MultiWiiBT_menu.prefs
-					.edit()
-					.putInt("pitch_percent",
-							Controller.aPit).commit();
-			MultiWiiBT_menu.prefs
-					.edit()
-					.putInt("roll_percent",
-							Controller.aRol).commit();
+			MultiWiiBT_menu.prefs.edit().putInt("yaw_percent", Controller.aYaw)
+					.commit();
+			MultiWiiBT_menu.prefs.edit()
+					.putInt("pitch_percent", Controller.aPit).commit();
+			MultiWiiBT_menu.prefs.edit()
+					.putInt("roll_percent", Controller.aRol).commit();
 
 			break;
 		}

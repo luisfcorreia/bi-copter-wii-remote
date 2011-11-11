@@ -25,8 +25,6 @@ public class Controller extends Activity implements OnTouchListener,
 	private SensorManager sensorManager = null;
 	private TBlue bt;
 	private String bt_rd = "";
-	private String mac = "";
-	public static SharedPreferences prefs;
 
 	private boolean running = false;
 	private int BT_SEND_DELAY = 200;
@@ -69,17 +67,8 @@ public class Controller extends Activity implements OnTouchListener,
 		mPaint.setStrokeWidth(4);
 
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-		prefs = new ObscuredSharedPreferences(this, this.getSharedPreferences(
-				MultiWiiBT_menu.MY_PREFS_FILE_NAME, Context.MODE_PRIVATE));
-		/*
-		 * example new value prefs.edit().putString("foo", "bar").commit();
-		 */
-		mac  = prefs.getString("remote_device", "");
-		aYaw = prefs.getInt("yaw_percent", 50);
-		aRol = prefs.getInt("pitch_percent", 50);
-		aPit = prefs.getInt("roll_percent", 50);
-		
-		bt = new TBlue(mac);
+	
+		bt = new TBlue(MultiWiiBT_menu.remote_device_mac);
 		Thr = new Rolling(5);
 		for (i = 1; i >= ROLAVERAGE; i++) {
 			Thr.add(1);
