@@ -3,6 +3,7 @@ package net.loide.games.bicopter;
 import fi.sulautetut.android.tblueclient.TBlue;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -25,6 +26,7 @@ public class Controller extends Activity implements OnTouchListener,
 	private TBlue bt;
 	private String bt_rd = "";
 	private String mac = "";
+	public static SharedPreferences prefs;
 
 	private boolean running = false;
 	private int BT_SEND_DELAY = 200;
@@ -51,7 +53,10 @@ public class Controller extends Activity implements OnTouchListener,
 	public Rolling Pit;
 	public Rolling Rol;
 	public Rolling Aux;
-
+	public int aPit = 50;
+	public int aRol = 50;
+	public int aYaw = 50;
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		int i;
 		super.onCreate(savedInstanceState);
@@ -64,8 +69,16 @@ public class Controller extends Activity implements OnTouchListener,
 		mPaint.setStrokeWidth(4);
 
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
-		mac = MultiWiiBT_menu.remote_device_mac;
+		prefs = new ObscuredSharedPreferences(this, this.getSharedPreferences(
+				MultiWiiBT_menu.MY_PREFS_FILE_NAME, Context.MODE_PRIVATE));
+		/*
+		 * example new value prefs.edit().putString("foo", "bar").commit();
+		 */
+		mac = prefs.getString("remote_device", "");
+		aYaw = prefs.getInt("yaw_percent", 50);
+		aRol = prefs.getInt("pitch_percent", 50);
+		aPit = prefs.getInt("roll_percent", 50);
+		
 		bt = new TBlue(mac);
 		Thr = new Rolling(5);
 		for (i = 1; i >= ROLAVERAGE; i++) {
@@ -326,10 +339,7 @@ public class Controller extends Activity implements OnTouchListener,
 			if (running) {
 
 				Thr.add(Math.floor(Math.abs(lY - 480) * 100 / 480));
-
-//				Yaw.add(lX * 100 / 300);
-				Yaw.add(lX - 150);
-
+				Yaw.add((lX * 99 / 300) + 1);
 				Aux.add((arm * 99) + 1);
 
 				mt = (byte) (Thr.getAverage() * 255 / 100);
@@ -337,6 +347,11 @@ public class Controller extends Activity implements OnTouchListener,
 				mr = (byte) (Rol.getAverage() * 255 / 100);
 				mp = (byte) (Pit.getAverage() * 255 / 100);
 				ma = (byte) (Aux.getAverage() * 255 / 100);
+				
+				// factor in the influence in percentage
+				mr = (mr + 128) * aRol;
+				mp = (mp + 128) * aPit;
+				my = (my + 128) * aYaw;
 
 				bt.write("K" + (char) mt);
 				bt.write("J" + (char) mr);

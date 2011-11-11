@@ -97,12 +97,8 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 			break;
 
 		case R.id.configBtn:
-			// handle button A click;
-
-			// Intent myIntent = new Intent(MultiWiiBT_menu.this,
-			// Bluetest.class);
-			// myIntent = new Intent(MultiWiiBT_menu.this, Config.class);
-			// MultiWiiBT_menu.this.startActivity(myIntent);
+			myIntent = new Intent(MultiWiiBT_menu.this, Config.class);
+			MultiWiiBT_menu.this.startActivity(myIntent);
 			break;
 
 		case R.id.exitBtn:
