@@ -3,7 +3,6 @@ package net.loide.games.bicopter;
 import fi.sulautetut.android.tblueclient.TBlue;
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -16,7 +15,7 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.util.Log;
+import android.widget.Toast;
 
 public class Controller extends Activity implements OnTouchListener,
 		SensorEventListener {
@@ -54,7 +53,7 @@ public class Controller extends Activity implements OnTouchListener,
 	public static int aPit;
 	public static int aRol;
 	public static int aYaw;
-	
+
 	protected void onCreate(Bundle savedInstanceState) {
 		int i;
 		super.onCreate(savedInstanceState);
@@ -66,8 +65,10 @@ public class Controller extends Activity implements OnTouchListener,
 		mPaint.setColor(0xFFFF0000);
 		mPaint.setStrokeWidth(4);
 
+		super.onCreate(savedInstanceState);
+
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-	
+
 		bt = new TBlue(MultiWiiBT_menu.remote_device_mac);
 		Thr = new Rolling(5);
 		for (i = 1; i >= ROLAVERAGE; i++) {
@@ -90,8 +91,14 @@ public class Controller extends Activity implements OnTouchListener,
 			Aux.add(1);
 		}
 
-		running = true;
-		CommLink.run();
+		if (bt.connected) {
+			running = true;
+			CommLink.run();
+		} else {
+			Toast.makeText(this, getString(R.string.btdev_una),
+					Toast.LENGTH_LONG).show();
+			finish();
+		}
 	}
 
 	private Paint mPaint;
@@ -107,6 +114,10 @@ public class Controller extends Activity implements OnTouchListener,
 		private float x = 0, y = 0;
 		private float dx1 = 0, dy1 = 0;
 		private static final float TOUCH_TOLERANCE = 4;
+		/*
+		 * posicionamento ajustavel para a pub private int topline = 260;
+		 */
+		private int topline = 200;
 
 		public MyView(Context c) {
 			super(c);
@@ -160,20 +171,22 @@ public class Controller extends Activity implements OnTouchListener,
 			// desenhar simulador de sticks
 			mPaint.setColor(0xFFAAAAAA);
 			mPaint.setStyle(Paint.Style.STROKE);
-			canvas.drawRect(360, 260, 560, 460, mPaint);
-			canvas.drawLine(460, 260, 460, 460, mPaint);
-			canvas.drawLine(360, 360, 560, 360, mPaint);
-			canvas.drawRect(580, 260, 780, 460, mPaint);
-			canvas.drawLine(680, 260, 680, 460, mPaint);
-			canvas.drawLine(580, 360, 780, 360, mPaint);
+			canvas.drawRect(360, topline + 0, 560, topline + 200, mPaint);
+			canvas.drawLine(460, topline + 0, 460, topline + 200, mPaint);
+			canvas.drawLine(360, topline + 100, 560, topline + 100, mPaint);
+			canvas.drawRect(580, topline + 0, 780, topline + 200, mPaint);
+			canvas.drawLine(680, topline + 0, 680, topline + 200, mPaint);
+			canvas.drawLine(580, topline + 100, 780, topline + 100, mPaint);
 
 			// desenhar posição calculada dos sticks
 			mPaint.setStyle(Paint.Style.FILL);
 			mPaint.setColor(0xFFCDE3A1);
 			canvas.drawCircle(360 + (mYaw * 2),
-					Math.abs(260 + (200 - (mThr * 2))), circleSize / 2, mPaint);
+					Math.abs(topline + (200 - (mThr * 2))), circleSize / 2,
+					mPaint);
 			canvas.drawCircle(580 + (mRol * 2),
-					Math.abs(260 + (200 - (mPit * 2))), circleSize / 2, mPaint);
+					Math.abs(topline + (200 - (mPit * 2))), circleSize / 2,
+					mPaint);
 		}
 
 		public boolean onTouchEvent(MotionEvent event) {
@@ -336,7 +349,7 @@ public class Controller extends Activity implements OnTouchListener,
 				mr = (byte) (Rol.getAverage() * 255 / 100);
 				mp = (byte) (Pit.getAverage() * 255 / 100);
 				ma = (byte) (Aux.getAverage() * 255 / 100);
-				
+
 				// factor in the influence in percentage
 				mr = (mr + 128) * aRol;
 				mp = (mp + 128) * aPit;
@@ -347,14 +360,8 @@ public class Controller extends Activity implements OnTouchListener,
 				bt.write("H" + (char) mp);
 				bt.write("G" + (char) my);
 				bt.write("F" + (char) ma);
-				/*
-				 * Log.i(TAG, "Throttle:" + mThr + " Yaw:" + mYaw + " Roll:" +
-				 * mRol + " Pitch:" + mPit + " Aux1:" + mAux);
-				 */
-				// bt_rd = bt.read();
-				// Log.i(TAG, bt_rd);
-				bt.write("M");
 
+				// bt.write("M");
 				mHandler.postDelayed(CommLink, BT_SEND_DELAY);
 			}
 		}
@@ -379,7 +386,7 @@ public class Controller extends Activity implements OnTouchListener,
 			samples[index] = x;
 			total += x;
 			if (++index == size)
-				index = 0; // cheaper than modulus
+				index = 0;
 		}
 
 		public double getAverage() {

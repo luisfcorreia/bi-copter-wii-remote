@@ -1,6 +1,7 @@
 package net.loide.games.bicopter;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -99,6 +100,13 @@ public class ObscuredSharedPreferences implements SharedPreferences {
 		public Editor remove(String s) {
 			delegate.remove(s);
 			return this;
+		}
+
+		@Override
+		public android.content.SharedPreferences.Editor putStringSet(
+				String arg0, Set<String> arg1) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 
@@ -202,6 +210,12 @@ public class ObscuredSharedPreferences implements SharedPreferences {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public Set<String> getStringSet(String arg0, Set<String> arg1) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

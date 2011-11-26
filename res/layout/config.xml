@@ -27,11 +27,11 @@
 			android:layout_width="match_parent" android:layout_height="wrap_content"
 			android:orientation="horizontal">
 			<Button android:id="@+id/btnConnect" android:layout_height="wrap_content"
-				android:text="Pair device" android:textSize="25dp"
+				android:text="@string/cfg_pair" android:textSize="25dp"
 				android:background="@drawable/custom_button" android:layout_width="154dp" android:layout_gravity="center" android:layout_marginLeft="100dp" android:layout_marginRight="10dp" android:layout_marginTop="2dp" android:layout_marginBottom="5dp"/>
 
 			<Button android:id="@+id/btnSave" android:layout_height="wrap_content"
-				android:text="Save prefs" android:textSize="25dp"
+				android:text="@string/cfg_save" android:textSize="25dp"
 				android:background="@drawable/custom_button" android:layout_width="154dp" android:layout_gravity="center" android:layout_marginLeft="10dp" android:layout_marginRight="100dp" android:layout_marginTop="2dp" android:layout_marginBottom="5dp"/>
 
 		</LinearLayout>
@@ -39,7 +39,7 @@
 			android:layout_height="wrap_content" android:layout_gravity="center"
 			android:layout_marginLeft="100dp" android:layout_marginRight="100dp"
 			android:layout_marginTop="10dp" android:gravity="center"
-			android:text="YAW % control" android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="@string/cfg_yaw" android:textAppearance="?android:attr/textAppearanceLarge"
 			android:textColor="@android:color/black" android:id="@+id/tvYAW" />
 
 		<SeekBar android:id="@+id/sbYAW" android:layout_width="match_parent"
@@ -50,7 +50,7 @@
 			android:layout_height="wrap_content" android:layout_gravity="center"
 			android:layout_marginLeft="100dp" android:layout_marginRight="100dp"
 			android:layout_marginTop="10dp" android:gravity="center"
-			android:text="Pitch % control" android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="@string/cfg_pitch" android:textAppearance="?android:attr/textAppearanceLarge"
 			android:textColor="@android:color/black" />
 
 		<SeekBar android:id="@+id/sbPitch" android:layout_width="match_parent"
@@ -60,7 +60,7 @@
 			android:layout_height="wrap_content" android:layout_gravity="center"
 			android:layout_marginLeft="100dp" android:layout_marginRight="100dp"
 			android:layout_marginTop="10dp" android:gravity="center"
-			android:text="Roll % control" android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="@string/cfg_roll" android:textAppearance="?android:attr/textAppearanceLarge"
 			android:textColor="@android:color/black" />
 
 		<SeekBar android:id="@+id/sbRoll" android:layout_width="match_parent"

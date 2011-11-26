@@ -22,6 +22,7 @@
     public OutputStream outStream = null;
     public InputStream inStream=null;
     boolean failed=false;
+    public boolean connected = false; 
    
     public TBlue(String address) 
     {
@@ -33,10 +34,14 @@
             Log.e(TAG, "Bluetooth adapter NOT FOUND or NOT ENABLED!");
             return;
         }
-        connect(); 
+        if (connect()){
+        	connected = true; 
+        } else {
+        	connected = false;
+        }
     } 
    
-    public void connect()
+    public boolean connect()
     {
         Log.i(TAG, "Bluetooth connecting to "+address+"...");
         try     {
@@ -45,7 +50,7 @@
             Log.e(TAG, "Failed to get remote device with MAC address."
                     +"Wrong format? MAC address must be upper case. ", 
                     e);
-            return;
+            return false;
         }
    
         Log.i(TAG, "Creating RFCOMM socket..."); 
@@ -82,7 +87,7 @@
             } catch (IOException eb) {
                 Log.e(TAG, "Also failed to close socket. ", eb);
             }
-            return;
+            return false;
         }
    
         try {
@@ -93,7 +98,7 @@
         } catch (IOException e) {
             Log.e(TAG, "Failed to create output stream.", e);  
         }
-        return;
+        return true;
     }
    
     public void write(String s) 
@@ -105,7 +110,6 @@
         } catch (IOException e) {
             Log.e(TAG, "Write failed.", e); 
         }
-   
     }
    
     public boolean streaming() 
@@ -123,7 +127,6 @@
                 int bytesRead = inStream.read(inBuffer);
                 inStr = new String(inBuffer, "ASCII");
                 inStr=inStr.substring(0, bytesRead); 
-    //            Log.i(TAG, "byteCount: "+bytesRead+ ", inStr: "+inStr);
             }
         } catch (IOException e) {
             Log.e(TAG, "Read failed", e); 

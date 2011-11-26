@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, MultiWiiBT!</string>
     <string name="app_name">bi-copter-remote</string>
+    <string name="btdev">Bluetooth device </string>
+    <string name="btdev_cfg"> read from config file.</string>
+    <string name="btdev_na">Bluetooth is not available</string>
+    <string name="btdev_sel">Please select a Bluetooth device!</string>
+    <string name="btdev_devaddr">Bluetooth device address </string>
+    <string name="btdev_devaddr_sav"> saved.</string>
+    <string name="btdev_ne">Bluetooth was not enabled!</string>
+    <string name="btdev_una">Bluetooth device unavailable!</string>
 
+    <string name="cfg_ncon">Not Connected</string>
+    <string name="cfg_con">Connected to: </string>
+    <string name="cfg_pair">Pair device</string>
+    <string name="cfg_save">Save prefs.</string>
+    <string name="cfg_yaw">YAW control</string>
+    <string name="cfg_pitch">Pitch control</string>
+    <string name="cfg_roll">Roll control</string>
+                        
+    <string name="btn_start">Start game</string>
+    <string name="btn_config">Config</string>
+    <string name="btn_exit">Exit</string>
+        
 </resources>

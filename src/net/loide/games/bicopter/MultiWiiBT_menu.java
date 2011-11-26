@@ -1,18 +1,18 @@
 package net.loide.games.bicopter;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
+import com.google.ads.AdView;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Vibrator;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class MultiWiiBT_menu extends Activity implements OnClickListener {
@@ -20,13 +20,12 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 	public static String remote_device_mac = "";
 	public static String MY_PREFS_FILE_NAME = "net.loide.games.bicopter.multiwiibt.conf";
 	public static SharedPreferences prefs;
-	public static String UI_VERSION = "0.2";
+	public static String UI_VERSION = "0.3";
+	public static String adID = "a14eced1c1c11aa";
 
 	// Intent request codes
 	private static final int REQUEST_CONNECT_DEVICE = 1;
 	private static final int REQUEST_ENABLE_BT = 2;
-
-	private Vibrator vibrator = null;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -35,18 +34,22 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
+		// Ads stuff
+		LinearLayout layout = (LinearLayout) findViewById(R.id.adThing);
+		AdView adView = new AdView(this, AdSize.BANNER, adID);
+		layout.addView(adView);
+		AdRequest request = new AdRequest();
+		adView.loadAd(request);
+
 		prefs = new ObscuredSharedPreferences(this, this.getSharedPreferences(
 				MY_PREFS_FILE_NAME, Context.MODE_PRIVATE));
-		/*
-		 * example new value prefs.edit().putString("foo", "bar").commit();
-		 */
 		remote_device_mac = prefs.getString("remote_device", "");
 
 		if (remote_device_mac != "") {
 			Toast.makeText(
 					this,
-					"Bluetooth device " + remote_device_mac
-							+ " read from config file.", Toast.LENGTH_SHORT)
+					getString(R.string.btdev) + " " + remote_device_mac + " "
+							+ getString(R.string.btdev_cfg), Toast.LENGTH_SHORT)
 					.show();
 		}
 
@@ -58,17 +61,13 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 		button2.setOnClickListener(this);
 		button3.setOnClickListener(this);
 
-		// init sensors
-		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		vibrator.cancel();
-
 		// Get local Bluetooth adapter
 		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter
 				.getDefaultAdapter();
 
 		// If the adapter is null, then Bluetooth is not supported
 		if (mBluetoothAdapter == null) {
-			Toast.makeText(this, "Bluetooth is not available",
+			Toast.makeText(this, getString(R.string.btdev_na),
 					Toast.LENGTH_LONG).show();
 			finish();
 			return;
@@ -87,7 +86,7 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.startgameBtn:
 			if (remote_device_mac == "") {
-				Toast.makeText(this, "Seleccione um dispositivo Bluetooth!",
+				Toast.makeText(this, getString(R.string.btdev_sel),
 						Toast.LENGTH_LONG).show();
 			} else {
 
@@ -108,34 +107,6 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.option_menu, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle item selection
-		switch (item.getItemId()) {
-		case R.id.scan:
-			Intent myIntent = new Intent(MultiWiiBT_menu.this,
-					BTDeviceList.class);
-			// MultiWiiBT_menu.this.startActivity(myIntent);
-			MultiWiiBT_menu.this.startActivityForResult(myIntent,
-					REQUEST_CONNECT_DEVICE);
-			// newGame();
-			return true;
-			/*
-			 * case R.id.discoverable: // showHelp(); Toast.makeText(this,
-			 * "TBD", Toast.LENGTH_LONG).show(); return true;
-			 */
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
-
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 		case REQUEST_CONNECT_DEVICE:
@@ -151,22 +122,21 @@ public class MultiWiiBT_menu extends Activity implements OnClickListener {
 
 				Toast.makeText(
 						this,
-						"Bluetooth device address " + remote_device_mac
-								+ " saved.", Toast.LENGTH_SHORT).show();
+						getString(R.string.btdev_devaddr) + " "
+								+ remote_device_mac + " "
+								+ getString(R.string.btdev_devaddr_sav),
+						Toast.LENGTH_SHORT).show();
 			}
 			break;
 		case REQUEST_ENABLE_BT:
 			// When the request to enable Bluetooth returns
 			if (resultCode == Activity.RESULT_OK) {
-				// Bluetooth is now enabled, so set up a chat session
-				// setupChat();
 			} else {
 				// User did not enable Bluetooth or an error occured
-				Toast.makeText(this, "Bluetooth was not enabled!",
+				Toast.makeText(this, getString(R.string.btdev_ne),
 						Toast.LENGTH_SHORT).show();
 				finish();
 			}
 		}
 	}
-
 }

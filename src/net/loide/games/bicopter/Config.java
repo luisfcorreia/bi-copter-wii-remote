@@ -33,9 +33,9 @@ public class Config extends Activity implements OnClickListener {
 		TextView tvmac = (TextView) this.findViewById(R.id.MacAdress);
 
 		if (MultiWiiBT_menu.prefs.getString("remote_device", "") == "")
-			tvstate.setText("Not Connected");
+			tvstate.setText(getString(R.string.cfg_ncon));
 		else {
-			tvstate.setText("Connected to: ");
+			tvstate.setText(getString(R.string.cfg_con));
 			tvmac.setText(MultiWiiBT_menu.remote_device_mac);
 
 			MultiWiiBT_menu.remote_device_mac = MultiWiiBT_menu.prefs
@@ -47,7 +47,6 @@ public class Config extends Activity implements OnClickListener {
 			sbYAW.setProgress(Controller.aYaw);
 			sbPitch.setProgress(Controller.aPit);
 			sbRoll.setProgress(Controller.aRol);
-
 		}
 	}
 
@@ -63,14 +62,10 @@ public class Config extends Activity implements OnClickListener {
 
 		@Override
 		public void onStartTrackingTouch(SeekBar arg0) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onStopTrackingTouch(SeekBar seekBar) {
-			// TODO Auto-generated method stub
-
 		}
 	};
 
@@ -79,17 +74,20 @@ public class Config extends Activity implements OnClickListener {
 		case R.id.sbYAW:
 			tv1 = (TextView) this.findViewById(R.id.tvYAW);
 			Controller.aYaw = skb.getProgress();
-			tv1.setText("YAW " + Controller.aYaw + "% control");
+			tv1.setText(getString(R.string.cfg_yaw) + " " + Controller.aYaw
+					+ "%");
 			break;
 		case R.id.sbPitch:
 			tv1 = (TextView) this.findViewById(R.id.tvPitch);
 			Controller.aPit = skb.getProgress();
-			tv1.setText("Pitch " + Controller.aPit + " % control");
+			tv1.setText(getString(R.string.cfg_pitch) + " " + Controller.aPit
+					+ "%");
 			break;
 		case R.id.sbRoll:
 			tv1 = (TextView) this.findViewById(R.id.tvRoll);
 			Controller.aRol = skb.getProgress();
-			tv1.setText("Roll " + Controller.aRol + " % control");
+			tv1.setText(getString(R.string.cfg_roll) + " " + Controller.aRol
+					+ " %");
 			break;
 		}
 	}
@@ -125,6 +123,9 @@ public class Config extends Activity implements OnClickListener {
 				// Get the device MAC address
 				MultiWiiBT_menu.remote_device_mac = data.getExtras().getString(
 						BTDeviceList.EXTRA_DEVICE_ADDRESS);
+				// update UI
+				TextView tvmac = (TextView) this.findViewById(R.id.MacAdress);
+				tvmac.setText(MultiWiiBT_menu.remote_device_mac);
 
 				// Save preferences in config file
 				MultiWiiBT_menu.prefs
@@ -134,8 +135,9 @@ public class Config extends Activity implements OnClickListener {
 
 				Toast.makeText(
 						this,
-						"Bluetooth device address "
-								+ MultiWiiBT_menu.remote_device_mac + " saved.",
+						getString(R.string.btdev_devaddr) + " "
+								+ MultiWiiBT_menu.remote_device_mac + " "
+								+ getString(R.string.btdev_devaddr_sav),
 						Toast.LENGTH_SHORT).show();
 			}
 			break;
@@ -145,7 +147,7 @@ public class Config extends Activity implements OnClickListener {
 				// Bluetooth is now enabled
 			} else {
 				// User did not enable Bluetooth or an error occured
-				Toast.makeText(this, "Bluetooth was not enabled!",
+				Toast.makeText(this, getString(R.string.btdev_ne),
 						Toast.LENGTH_SHORT).show();
 				finish();
 			}

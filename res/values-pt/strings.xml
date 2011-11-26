@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">bi-copter-remote</string>
+    <string name="btdev">Endereço Bluetooth </string>
+    <string name="btdev_cfg"> lido do ficheiro de configuração.</string>
+    <string name="btdev_na">Bluetooth indisponível</string>
+    <string name="btdev_sel">Por favor seleccione um dispositivo Bluetooth!</string>
+    <string name="btdev_devaddr">Endereço Bluetooth </string>
+    <string name="btdev_devaddr_sav"> gravado.</string>
+    <string name="btdev_ne">Bluetooth não foi activado!</string>
+    <string name="btdev_una">Dispositivo Bluetooth indisponível!</string>
+
+    <string name="cfg_ncon">Não ligado</string>
+    <string name="cfg_con">Ligado a: </string>
+    <string name="cfg_pair">Emparelhar</string>
+    <string name="cfg_save">Gravar</string>
+    <string name="cfg_yaw">Controle YAW</string>
+    <string name="cfg_pitch">Controle Pitch</string>
+    <string name="cfg_roll">Controle Roll</string>
+        
+    <string name="btn_start">Iniciar jogo</string>
+    <string name="btn_config">Configuração</string>
+    <string name="btn_exit">Sair</string>
+        
+</resources>

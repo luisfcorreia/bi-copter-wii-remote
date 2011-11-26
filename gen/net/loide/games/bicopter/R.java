@@ -11,17 +11,21 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int custom_button=0x7f020000;
-        public static final int icon=0x7f020001;
+        public static final int bk=0x7f020000;
+        public static final int custom_button=0x7f020001;
+        public static final int icon=0x7f020002;
     }
     public static final class id {
+        public static final int LinearLayout=0x7f060012;
         public static final int MacAdress=0x7f060003;
+        public static final int adThing=0x7f060015;
+        public static final int bottomLayout=0x7f060016;
         public static final int btnConnect=0x7f060005;
         public static final int btnSave=0x7f060006;
         public static final int button_scan=0x7f060011;
-        public static final int configBtn=0x7f060013;
-        public static final int discoverable=0x7f060016;
-        public static final int exitBtn=0x7f060014;
+        public static final int configBtn=0x7f060017;
+        public static final int discoverable=0x7f06001a;
+        public static final int exitBtn=0x7f060018;
         public static final int linearLayout1=0x7f060000;
         public static final int linearLayout2=0x7f060001;
         public static final int linearLayout3=0x7f060004;
@@ -30,11 +34,12 @@ public final class R {
         public static final int sbPitch=0x7f06000a;
         public static final int sbRoll=0x7f06000c;
         public static final int sbYAW=0x7f060008;
-        public static final int scan=0x7f060015;
-        public static final int startgameBtn=0x7f060012;
+        public static final int scan=0x7f060019;
+        public static final int startgameBtn=0x7f060014;
         public static final int stateConnected=0x7f060002;
         public static final int title_new_devices=0x7f06000f;
         public static final int title_paired_devices=0x7f06000d;
+        public static final int topLayout=0x7f060013;
         public static final int tvPitch=0x7f060009;
         public static final int tvRoll=0x7f06000b;
         public static final int tvYAW=0x7f060007;
@@ -50,7 +55,24 @@ public final class R {
         public static final int option_menu=0x7f050000;
     }
     public static final class string {
-        public static final int app_name=0x7f040001;
-        public static final int hello=0x7f040000;
+        public static final int app_name=0x7f040000;
+        public static final int btdev=0x7f040001;
+        public static final int btdev_cfg=0x7f040002;
+        public static final int btdev_devaddr=0x7f040005;
+        public static final int btdev_devaddr_sav=0x7f040006;
+        public static final int btdev_na=0x7f040003;
+        public static final int btdev_ne=0x7f040007;
+        public static final int btdev_sel=0x7f040004;
+        public static final int btdev_una=0x7f040008;
+        public static final int btn_config=0x7f040011;
+        public static final int btn_exit=0x7f040012;
+        public static final int btn_start=0x7f040010;
+        public static final int cfg_con=0x7f04000a;
+        public static final int cfg_ncon=0x7f040009;
+        public static final int cfg_pair=0x7f04000b;
+        public static final int cfg_pitch=0x7f04000e;
+        public static final int cfg_roll=0x7f04000f;
+        public static final int cfg_save=0x7f04000c;
+        public static final int cfg_yaw=0x7f04000d;
     }
 }
