@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">bi-copter-remote</string>
     <string name="btdev">Endereço Bluetooth </string>
     <string name="btdev_cfg"> lido do ficheiro de configuração.</string>
@@ -9,7 +10,6 @@
     <string name="btdev_devaddr_sav"> gravado.</string>
     <string name="btdev_ne">Bluetooth não foi activado!</string>
     <string name="btdev_una">Dispositivo Bluetooth indisponível!</string>
-
     <string name="cfg_ncon">Não ligado</string>
     <string name="cfg_con">Ligado a: </string>
     <string name="cfg_pair">Emparelhar</string>
@@ -17,9 +17,13 @@
     <string name="cfg_yaw">Controle YAW</string>
     <string name="cfg_pitch">Controle Pitch</string>
     <string name="cfg_roll">Controle Roll</string>
-        
     <string name="btn_start">Iniciar jogo</string>
     <string name="btn_config">Configuração</string>
     <string name="btn_exit">Sair</string>
-        
+    <string name="about_menu">Sobre</string>
+    <string name="about_title">Sobre MultiWiiBt Remote</string>
+    <string name="about_lc">Código, ideias e a maioria dos bugs:\n\tLuis Correia - info@loide.net</string>
+    <string name="about_rp">Desenho dos Icons e Layout:\n\tRafael Pato</string>
+    <string name="about_web">\nhttp://games.loide.net\nhttp://arduinoPT.info</string>
+
 </resources>
