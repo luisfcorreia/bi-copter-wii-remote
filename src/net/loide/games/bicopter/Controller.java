@@ -69,7 +69,7 @@ public class Controller extends Activity implements OnTouchListener,
 
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
-		bt = new TBlue(MultiWiiBT_menu.remote_device_mac);
+		bt = new TBlue(MultiWiiBT.remote_device_mac);
 		Thr = new Rolling(5);
 		for (i = 1; i >= ROLAVERAGE; i++) {
 			Thr.add(1);
@@ -143,7 +143,7 @@ public class Controller extends Activity implements OnTouchListener,
 			// desenhar app name
 			mPaint.setColor(0xFF00FFFF);
 			mPaint.setTextSize(42);
-			canvas.drawText("MultiWiiBT UI v" + MultiWiiBT_menu.UI_VERSION,
+			canvas.drawText("MultiWiiBT UI v" + MultiWiiBT.UI_VERSION,
 					360, 45, mPaint);
 
 			// desenhar arm/disarm button

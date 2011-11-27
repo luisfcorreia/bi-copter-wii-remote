@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">bi-copter-remote</string>
+    <string name="app_name">MultiWii BT Remote</string>
     <string name="btdev">Endereço Bluetooth </string>
     <string name="btdev_cfg"> lido do ficheiro de configuração.</string>
     <string name="btdev_na">Bluetooth indisponível</string>

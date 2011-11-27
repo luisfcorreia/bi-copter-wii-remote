@@ -32,18 +32,18 @@ public class Config extends Activity implements OnClickListener {
 		TextView tvstate = (TextView) this.findViewById(R.id.stateConnected);
 		TextView tvmac = (TextView) this.findViewById(R.id.MacAdress);
 
-		if (MultiWiiBT_menu.prefs.getString("remote_device", "") == "")
+		if (MultiWiiBT.prefs.getString("remote_device", "") == "")
 			tvstate.setText(getString(R.string.cfg_ncon));
 		else {
 			tvstate.setText(getString(R.string.cfg_con));
-			tvmac.setText(MultiWiiBT_menu.remote_device_mac);
+			tvmac.setText(MultiWiiBT.remote_device_mac);
 
-			MultiWiiBT_menu.remote_device_mac = MultiWiiBT_menu.prefs
+			MultiWiiBT.remote_device_mac = MultiWiiBT.prefs
 					.getString("remote_device", "");
 
-			Controller.aYaw = MultiWiiBT_menu.prefs.getInt("yaw_percent", 50);
-			Controller.aPit = MultiWiiBT_menu.prefs.getInt("pitch_percent", 50);
-			Controller.aRol = MultiWiiBT_menu.prefs.getInt("roll_percent", 50);
+			Controller.aYaw = MultiWiiBT.prefs.getInt("yaw_percent", 50);
+			Controller.aPit = MultiWiiBT.prefs.getInt("pitch_percent", 50);
+			Controller.aRol = MultiWiiBT.prefs.getInt("roll_percent", 50);
 			sbYAW.setProgress(Controller.aYaw);
 			sbPitch.setProgress(Controller.aPit);
 			sbRoll.setProgress(Controller.aRol);
@@ -100,15 +100,15 @@ public class Config extends Activity implements OnClickListener {
 					.startActivityForResult(myIntent, REQUEST_CONNECT_DEVICE);
 			break;
 		case R.id.btnSave:
-			MultiWiiBT_menu.prefs
+			MultiWiiBT.prefs
 					.edit()
 					.putString("remote_device",
-							MultiWiiBT_menu.remote_device_mac).commit();
-			MultiWiiBT_menu.prefs.edit().putInt("yaw_percent", Controller.aYaw)
+							MultiWiiBT.remote_device_mac).commit();
+			MultiWiiBT.prefs.edit().putInt("yaw_percent", Controller.aYaw)
 					.commit();
-			MultiWiiBT_menu.prefs.edit()
+			MultiWiiBT.prefs.edit()
 					.putInt("pitch_percent", Controller.aPit).commit();
-			MultiWiiBT_menu.prefs.edit()
+			MultiWiiBT.prefs.edit()
 					.putInt("roll_percent", Controller.aRol).commit();
 
 			break;
@@ -121,22 +121,22 @@ public class Config extends Activity implements OnClickListener {
 			// When DeviceListActivity returns with a device to connect
 			if (resultCode == Activity.RESULT_OK) {
 				// Get the device MAC address
-				MultiWiiBT_menu.remote_device_mac = data.getExtras().getString(
+				MultiWiiBT.remote_device_mac = data.getExtras().getString(
 						BTDeviceList.EXTRA_DEVICE_ADDRESS);
 				// update UI
 				TextView tvmac = (TextView) this.findViewById(R.id.MacAdress);
-				tvmac.setText(MultiWiiBT_menu.remote_device_mac);
+				tvmac.setText(MultiWiiBT.remote_device_mac);
 
 				// Save preferences in config file
-				MultiWiiBT_menu.prefs
+				MultiWiiBT.prefs
 						.edit()
 						.putString("remote_device",
-								MultiWiiBT_menu.remote_device_mac).commit();
+								MultiWiiBT.remote_device_mac).commit();
 
 				Toast.makeText(
 						this,
 						getString(R.string.btdev_devaddr) + " "
-								+ MultiWiiBT_menu.remote_device_mac + " "
+								+ MultiWiiBT.remote_device_mac + " "
 								+ getString(R.string.btdev_devaddr_sav),
 						Toast.LENGTH_SHORT).show();
 			}

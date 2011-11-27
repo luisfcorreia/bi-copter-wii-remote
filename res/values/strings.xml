@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">bi-copter-remote</string>
+    <string name="app_name">MultiWii BT Remote</string>
     <string name="btdev">Bluetooth device </string>
     <string name="btdev_cfg"> read from config file.</string>
     <string name="btdev_na">Bluetooth is not available</string>
