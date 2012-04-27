@@ -26,7 +26,7 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 	public static String remote_device_mac = "";
 	public static String MY_PREFS_FILE_NAME = "net.loide.games.bicopter.multiwiibt.conf";
 	public static SharedPreferences prefs;
-	public static String UI_VERSION = "0.3";
+	public static String UI_VERSION = "0.4";
 	public static String adID = "a14eced1c1c11aa";
 	PopupWindow pw;
 	View lay_about;
@@ -42,12 +42,16 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 		setContentView(R.layout.main);
 
 		// Ads stuff
+
 		LinearLayout layout = (LinearLayout) findViewById(R.id.adThing);
 		AdView adView = new AdView(this, AdSize.BANNER, adID);
 		layout.addView(adView);
 		AdRequest request = new AdRequest();
 		adView.loadAd(request);
 
+		
+		
+		
 		prefs = new ObscuredSharedPreferences(this, this.getSharedPreferences(
 				MY_PREFS_FILE_NAME, Context.MODE_PRIVATE));
 		remote_device_mac = prefs.getString("remote_device", "");

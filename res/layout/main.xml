@@ -4,13 +4,13 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_gravity="center_horizontal|center_vertical"
-    android:background="#DBFCAC"
     android:orientation="horizontal" >
 
     <LinearLayout
         android:id="@+id/topLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#DBFCAC"
         android:orientation="vertical" >
 
         <Button
@@ -28,8 +28,8 @@
 
         <LinearLayout
             android:id="@+id/adThing"
-            android:layout_width="480px"
-            android:layout_height="75px"
+            android:layout_width="320dp"
+            android:layout_height="50dp"
             android:layout_marginLeft="110dp" >
         </LinearLayout>
 
@@ -37,8 +37,8 @@
             android:id="@+id/bottomLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal" >
 
             <Button
@@ -66,7 +66,7 @@
                 android:gravity="center_horizontal|center_vertical"
                 android:text="@string/btn_exit"
                 android:textSize="25dp" />
-
         </LinearLayout>
     </LinearLayout>
+
 </LinearLayout>
