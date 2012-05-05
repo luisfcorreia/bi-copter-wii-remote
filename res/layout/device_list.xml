@@ -21,7 +21,7 @@
     <TextView android:id="@+id/title_paired_devices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Dispositivos emparelhados"
+        android:text="@string/btdev_dis"
         android:visibility="gone"
         android:background="#666"
         android:textColor="#fff"
@@ -36,7 +36,7 @@
     <TextView android:id="@+id/title_new_devices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Outros dispositivos"
+        android:text="@string/btdev_out"
         android:visibility="gone"
         android:background="#666"
         android:textColor="#fff"
@@ -51,6 +51,6 @@
     <Button android:id="@+id/button_scan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Pesquisar por dispositivos"
+        android:text="@string/btdev_pes"
     />
 </LinearLayout>

@@ -38,8 +38,8 @@ public class Controller extends Activity implements OnTouchListener,
 	public int mPit = 50;
 	public int mRol = 50;
 	public int mAux = 50;
-	public float base_mPit = 0;
-	public float base_mRol = 0;
+	public double base_mPit = 0;
+	public double base_mRol = 0;
 	public int pitch;
 	public int roll;
 	public int arm = 0;
@@ -240,8 +240,7 @@ public class Controller extends Activity implements OnTouchListener,
 							mPit = maxP + fifty;
 							mRol = maxR + fifty;
 
-							mThr = (int) Math
-									.floor(Math.abs(lY - 480) * 100 / 480);
+							mThr = (int) Math.floor(Math.abs(lY - 480) * 100 / 480);
 							mYaw = (int) (lX * 100 / 300);
 
 							Thr.add(mThr);
@@ -301,6 +300,7 @@ public class Controller extends Activity implements OnTouchListener,
 
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -323,6 +323,7 @@ public class Controller extends Activity implements OnTouchListener,
 		super.onStop();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void onSensorChanged(SensorEvent sensorEvent) {
 		if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
 			roll = Math.round(sensorEvent.values[1]);

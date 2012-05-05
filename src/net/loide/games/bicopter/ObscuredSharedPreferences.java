@@ -105,9 +105,9 @@ public class ObscuredSharedPreferences implements SharedPreferences {
 		@Override
 		public android.content.SharedPreferences.Editor putStringSet(
 				String arg0, Set<String> arg1) {
-			// TODO Auto-generated method stub
 			return null;
 		}
+
 	}
 
 	public Editor edit() {
@@ -181,7 +181,7 @@ public class ObscuredSharedPreferences implements SharedPreferences {
 					key,
 					new PBEParameterSpec(Settings.Secure.getString(
 							context.getContentResolver(),
-							Settings.System.ANDROID_ID).getBytes(UTF8), 20));
+							Settings.Secure.ANDROID_ID).getBytes(UTF8), 20));
 			return new String(Base64.encode(pbeCipher.doFinal(bytes),
 					Base64.NO_WRAP), UTF8);
 
@@ -204,7 +204,7 @@ public class ObscuredSharedPreferences implements SharedPreferences {
 					key,
 					new PBEParameterSpec(Settings.Secure.getString(
 							context.getContentResolver(),
-							Settings.System.ANDROID_ID).getBytes(UTF8), 20));
+							Settings.Secure.ANDROID_ID).getBytes(UTF8), 20));
 			return new String(pbeCipher.doFinal(bytes), UTF8);
 
 		} catch (Exception e) {
@@ -214,8 +214,8 @@ public class ObscuredSharedPreferences implements SharedPreferences {
 
 	@Override
 	public Set<String> getStringSet(String arg0, Set<String> arg1) {
-		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }

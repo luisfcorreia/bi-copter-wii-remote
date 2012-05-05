@@ -53,29 +53,33 @@ public final class R {
         public static final int option_menu=0x7f050000;
     }
     public static final class string {
-        public static final int about_lc=0x7f040015;
-        public static final int about_menu=0x7f040013;
-        public static final int about_rp=0x7f040016;
-        public static final int about_title=0x7f040014;
-        public static final int about_web=0x7f040017;
+        public static final int about_lc=0x7f040019;
+        public static final int about_menu=0x7f040017;
+        public static final int about_rp=0x7f04001a;
+        public static final int about_title=0x7f040018;
+        public static final int about_web=0x7f04001b;
         public static final int app_name=0x7f040000;
         public static final int btdev=0x7f040001;
         public static final int btdev_cfg=0x7f040002;
+        public static final int btdev_con=0x7f040009;
         public static final int btdev_devaddr=0x7f040005;
         public static final int btdev_devaddr_sav=0x7f040006;
+        public static final int btdev_dis=0x7f04000a;
         public static final int btdev_na=0x7f040003;
         public static final int btdev_ne=0x7f040007;
+        public static final int btdev_out=0x7f04000b;
+        public static final int btdev_pes=0x7f04000c;
         public static final int btdev_sel=0x7f040004;
         public static final int btdev_una=0x7f040008;
-        public static final int btn_config=0x7f040011;
-        public static final int btn_exit=0x7f040012;
-        public static final int btn_start=0x7f040010;
-        public static final int cfg_con=0x7f04000a;
-        public static final int cfg_ncon=0x7f040009;
-        public static final int cfg_pair=0x7f04000b;
-        public static final int cfg_pitch=0x7f04000e;
-        public static final int cfg_roll=0x7f04000f;
-        public static final int cfg_save=0x7f04000c;
-        public static final int cfg_yaw=0x7f04000d;
+        public static final int btn_config=0x7f040015;
+        public static final int btn_exit=0x7f040016;
+        public static final int btn_start=0x7f040014;
+        public static final int cfg_con=0x7f04000e;
+        public static final int cfg_ncon=0x7f04000d;
+        public static final int cfg_pair=0x7f04000f;
+        public static final int cfg_pitch=0x7f040012;
+        public static final int cfg_roll=0x7f040013;
+        public static final int cfg_save=0x7f040010;
+        public static final int cfg_yaw=0x7f040011;
     }
 }

@@ -10,6 +10,10 @@
     <string name="btdev_devaddr_sav"> gravado.</string>
     <string name="btdev_ne">Bluetooth não foi activado!</string>
     <string name="btdev_una">Dispositivo Bluetooth indisponível!</string>
+    <string name="btdev_con">Ligado?</string>
+    <string name="btdev_dis">Dispositivos emparelhados</string>
+    <string name="btdev_out">Outros dispositivos</string>
+    <string name="btdev_pes">Pesquisar por dispositivos</string>
     <string name="cfg_ncon">Não ligado</string>
     <string name="cfg_con">Ligado a: </string>
     <string name="cfg_pair">Emparelhar</string>

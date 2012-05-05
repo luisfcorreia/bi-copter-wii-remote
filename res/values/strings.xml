@@ -10,6 +10,10 @@
     <string name="btdev_devaddr_sav"> saved.</string>
     <string name="btdev_ne">Bluetooth was not enabled!</string>
     <string name="btdev_una">Bluetooth device unavailable!</string>
+    <string name="btdev_con">Connected?</string>
+    <string name="btdev_dis">Paired devices</string>
+    <string name="btdev_out">Other devices</string>
+    <string name="btdev_pes">Search for devices</string>
     <string name="cfg_ncon">Not Connected</string>
     <string name="cfg_con">Connected to: </string>
     <string name="cfg_pair">Pair device</string>
