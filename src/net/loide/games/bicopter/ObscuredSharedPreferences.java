@@ -81,6 +81,7 @@ public class ObscuredSharedPreferences implements SharedPreferences {
 			return this;
 		}
 
+		@Override
 		public void apply() {
 			((Editor) delegate).apply();
 		}
@@ -102,7 +103,6 @@ public class ObscuredSharedPreferences implements SharedPreferences {
 			return this;
 		}
 
-		@Override
 		public android.content.SharedPreferences.Editor putStringSet(
 				String arg0, Set<String> arg1) {
 			return null;
@@ -110,6 +110,7 @@ public class ObscuredSharedPreferences implements SharedPreferences {
 
 	}
 
+	@Override
 	public Editor edit() {
 		return new Editor();
 	}
@@ -212,7 +213,6 @@ public class ObscuredSharedPreferences implements SharedPreferences {
 		}
 	}
 
-	@Override
 	public Set<String> getStringSet(String arg0, Set<String> arg1) {
 		return null;
 	}

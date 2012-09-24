@@ -12,6 +12,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.FloatMath;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -54,6 +55,7 @@ public class Controller extends Activity implements OnTouchListener,
 	public static int aRol;
 	public static int aYaw;
 
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		int i;
 		super.onCreate(savedInstanceState);
@@ -189,6 +191,7 @@ public class Controller extends Activity implements OnTouchListener,
 					mPaint);
 		}
 
+		@Override
 		public boolean onTouchEvent(MotionEvent event) {
 
 			x = event.getX();
@@ -240,7 +243,7 @@ public class Controller extends Activity implements OnTouchListener,
 							mPit = maxP + fifty;
 							mRol = maxR + fifty;
 
-							mThr = (int) Math.floor(Math.abs(lY - 480) * 100 / 480);
+							mThr = (int) FloatMath.floor(Math.abs(lY - 480) * 100 / 480);
 							mYaw = (int) (lX * 100 / 300);
 
 							Thr.add(mThr);
@@ -300,7 +303,7 @@ public class Controller extends Activity implements OnTouchListener,
 
 	}
 
-	@SuppressWarnings("deprecation")
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -323,7 +326,7 @@ public class Controller extends Activity implements OnTouchListener,
 		super.onStop();
 	}
 
-	@SuppressWarnings("deprecation")
+	@Override
 	public void onSensorChanged(SensorEvent sensorEvent) {
 		if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
 			roll = Math.round(sensorEvent.values[1]);
@@ -331,17 +334,19 @@ public class Controller extends Activity implements OnTouchListener,
 		}
 	}
 
+	@Override
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
 	}
 
 	private Handler mHandler = new Handler();
 	private Runnable CommLink = new Runnable() {
 
+		@Override
 		public void run() {
 			int mt, mr, mp, my, ma;
 			if (running) {
 
-				Thr.add(Math.floor(Math.abs(lY - 480) * 100 / 480));
+				Thr.add(FloatMath.floor(Math.abs(lY - 480) * 100 / 480));
 				Yaw.add((lX * 99 / 300) + 1);
 				Aux.add((arm * 99) + 1);
 

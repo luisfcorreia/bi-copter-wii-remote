@@ -14,6 +14,7 @@ public class Config extends Activity implements OnClickListener {
 	private static final int REQUEST_CONNECT_DEVICE = 1;
 	private static final int REQUEST_ENABLE_BT = 2;
 
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
@@ -92,6 +93,7 @@ public class Config extends Activity implements OnClickListener {
 		}
 	}
 
+	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btnConnect:
@@ -115,6 +117,7 @@ public class Config extends Activity implements OnClickListener {
 		}
 	}
 
+	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 		case REQUEST_CONNECT_DEVICE:

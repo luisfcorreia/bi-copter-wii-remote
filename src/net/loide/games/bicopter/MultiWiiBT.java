@@ -92,6 +92,7 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 		}
 	}
 
+	@Override
 	public void onClick(View v) {
 		Intent myIntent;
 		switch (v.getId()) {
@@ -118,6 +119,7 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 		}
 	}
 
+	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 		case REQUEST_CONNECT_DEVICE:
@@ -170,6 +172,7 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 					+ getString(R.string.about_web));
 			helpBuilder.setPositiveButton("OK",
 					new DialogInterface.OnClickListener() {
+						@Override
 						public void onClick(DialogInterface dialog, int which) {
 						}
 					});
