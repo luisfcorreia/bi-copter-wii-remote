@@ -42,16 +42,12 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 		setContentView(R.layout.main);
 
 		// Ads stuff
-
 		LinearLayout layout = (LinearLayout) findViewById(R.id.adThing);
 		AdView adView = new AdView(this, AdSize.BANNER, adID);
 		layout.addView(adView);
 		AdRequest request = new AdRequest();
 		adView.loadAd(request);
 
-		
-		
-		
 		prefs = new ObscuredSharedPreferences(this, this.getSharedPreferences(
 				MY_PREFS_FILE_NAME, Context.MODE_PRIVATE));
 		remote_device_mac = prefs.getString("remote_device", "");
@@ -97,12 +93,20 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 		Intent myIntent;
 		switch (v.getId()) {
 		case R.id.startgameBtn:
-			if (remote_device_mac == "") {
+
+/*
+ 			if (remote_device_mac == "") {
+*/
+			if (false) {
+				
 				Toast.makeText(this, getString(R.string.btdev_sel),
 						Toast.LENGTH_LONG).show();
 			} else {
-
+/*
 				myIntent = new Intent(MultiWiiBT.this, Controller.class);
+				MultiWiiBT.this.startActivity(myIntent);
+*/
+				myIntent = new Intent(MultiWiiBT.this, ControlSurface.class);
 				MultiWiiBT.this.startActivity(myIntent);
 			}
 			break;
