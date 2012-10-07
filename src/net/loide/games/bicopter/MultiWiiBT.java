@@ -26,7 +26,7 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 	public static String remote_device_mac = "";
 	public static String MY_PREFS_FILE_NAME = "net.loide.games.bicopter.multiwiibt.conf";
 	public static SharedPreferences prefs;
-	public static String UI_VERSION = "0.4";
+	public static String UI_VERSION = "0.5";
 	public static String adID = "a14eced1c1c11aa";
 	PopupWindow pw;
 	View lay_about;
@@ -94,20 +94,18 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.startgameBtn:
 
-/*
- 			if (remote_device_mac == "") {
-*/
-			if (false) {
-				
+			if (remote_device_mac == "") {
+
 				Toast.makeText(this, getString(R.string.btdev_sel),
 						Toast.LENGTH_LONG).show();
 			} else {
-/*
+
 				myIntent = new Intent(MultiWiiBT.this, Controller.class);
 				MultiWiiBT.this.startActivity(myIntent);
-*/
-				myIntent = new Intent(MultiWiiBT.this, ControlSurface.class);
-				MultiWiiBT.this.startActivity(myIntent);
+				/*
+				 * myIntent = new Intent(MultiWiiBT.this, ControlSurface.class);
+				 * MultiWiiBT.this.startActivity(myIntent);
+				 */
 			}
 			break;
 

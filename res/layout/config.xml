@@ -1,77 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent" android:background="#DBFCAC">
-	<LinearLayout android:id="@+id/linearLayout1"
-		android:layout_width="match_parent" android:layout_height="match_parent"
-		android:layout_weight="1.25" android:orientation="vertical">
-		<LinearLayout android:id="@+id/linearLayout2"
-			android:layout_width="match_parent" android:layout_height="wrap_content"
-			android:layout_marginBottom="10dp" android:layout_marginLeft="100dp"
-			android:layout_marginRight="100dp" android:layout_marginTop="10dp"
-			android:orientation="horizontal">
-			<TextView android:id="@+id/stateConnected"
-				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:layout_x="55dp" android:layout_y="-10dp" android:text="@string/btdev_con"
-				android:textColor="@android:color/black" android:gravity="center"
-				android:textAppearance="?android:attr/textAppearanceMedium" />
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#DBFCAC"
+    android:orientation="vertical" >
 
-			<TextView android:id="@+id/MacAdress" android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:layout_marginLeft="10dp"
-				android:gravity="center" android:text=""
-				android:textAppearance="?android:attr/textAppearanceSmall"
-				android:textColor="@android:color/black" />
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.25"
+        android:orientation="vertical" >
 
-		</LinearLayout>
-		<LinearLayout android:id="@+id/linearLayout3"
-			android:layout_width="match_parent" android:layout_height="wrap_content"
-			android:orientation="horizontal">
-			<Button android:id="@+id/btnConnect" android:layout_height="wrap_content"
-				android:text="@string/cfg_pair" android:textSize="25dp"
-				android:background="@drawable/custom_button" android:layout_width="154dp"
-				android:layout_gravity="center" android:layout_marginLeft="100dp"
-				android:layout_marginRight="10dp" android:layout_marginTop="2dp"
-				android:layout_marginBottom="5dp" />
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginRight="100dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" >
 
-			<Button android:id="@+id/btnSave" android:layout_height="wrap_content"
-				android:text="@string/cfg_save" android:textSize="25dp"
-				android:background="@drawable/custom_button" android:layout_width="154dp"
-				android:layout_gravity="center" android:layout_marginLeft="10dp"
-				android:layout_marginRight="100dp" android:layout_marginTop="2dp"
-				android:layout_marginBottom="5dp" />
+            <TextView
+                android:id="@+id/stateConnected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_x="55dp"
+                android:layout_y="-10dp"
+                android:gravity="center"
+                android:text="@string/btdev_con"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/black" />
 
-		</LinearLayout>
-		<TextView android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:layout_gravity="center"
-			android:layout_marginLeft="100dp" android:layout_marginRight="100dp"
-			android:layout_marginTop="10dp" android:gravity="center"
-			android:text="@string/cfg_yaw" android:textAppearance="?android:attr/textAppearanceLarge"
-			android:textColor="@android:color/black" android:id="@+id/tvYAW" />
+            <TextView
+                android:id="@+id/MacAdress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
 
-		<SeekBar android:id="@+id/sbYAW" android:layout_width="match_parent"
-			android:layout_height="wrap_content" android:layout_marginLeft="100dp"
-			android:layout_marginRight="100dp" />
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
 
-		<TextView android:id="@+id/tvPitch" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:layout_gravity="center"
-			android:layout_marginLeft="100dp" android:layout_marginRight="100dp"
-			android:layout_marginTop="10dp" android:gravity="center"
-			android:text="@string/cfg_pitch" android:textAppearance="?android:attr/textAppearanceLarge"
-			android:textColor="@android:color/black" />
+            <Button
+                android:id="@+id/btnConnect"
+                android:layout_width="154dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/custom_button"
+                android:text="@string/cfg_pair"
+                android:textSize="25dp" />
 
-		<SeekBar android:id="@+id/sbPitch" android:layout_width="match_parent"
-			android:layout_height="wrap_content" android:layout_marginLeft="100dp"
-			android:layout_marginRight="100dp" />
-		<TextView android:id="@+id/tvRoll" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:layout_gravity="center"
-			android:layout_marginLeft="100dp" android:layout_marginRight="100dp"
-			android:layout_marginTop="10dp" android:gravity="center"
-			android:text="@string/cfg_roll" android:textAppearance="?android:attr/textAppearanceLarge"
-			android:textColor="@android:color/black" />
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="154dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="100dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/custom_button"
+                android:text="@string/cfg_save"
+                android:textSize="25dp" />
+        </LinearLayout>
 
-		<SeekBar android:id="@+id/sbRoll" android:layout_width="match_parent"
-			android:layout_height="wrap_content" android:layout_marginLeft="100dp"
-			android:layout_marginRight="100dp" />
-	</LinearLayout>
+        <TextView
+            android:id="@+id/tvYAW"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="100dp"
+            android:layout_marginRight="100dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="@string/cfg_yaw"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/black" />
+
+        <SeekBar
+            android:id="@+id/sbYAW"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp"
+            android:layout_marginRight="100dp" />
+
+        <TextView
+            android:id="@+id/tvPitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="100dp"
+            android:layout_marginRight="100dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="@string/cfg_pitch"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/black" />
+
+        <SeekBar
+            android:id="@+id/sbPitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp"
+            android:layout_marginRight="100dp" />
+
+        <TextView
+            android:id="@+id/tvRoll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="100dp"
+            android:layout_marginRight="100dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="@string/cfg_roll"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/black" />
+
+        <SeekBar
+            android:id="@+id/sbRoll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp"
+            android:layout_marginRight="100dp" />
+    </LinearLayout>
 
 </AbsoluteLayout>

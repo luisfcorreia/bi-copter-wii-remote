@@ -1,5 +1,10 @@
 package net.loide.games.bicopter;
 
+/*
+ * sensor code shamelessly stolen from
+ * http://www.netmite.com/android/mydroid/cupcake/development/samples/Compass/src/com/example/android/compass/CompassActivity.java
+ */
+
 import fi.sulautetut.android.tblueclient.TBlue;
 import android.app.Activity;
 import android.content.Context;
@@ -13,6 +18,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.FloatMath;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -28,7 +34,6 @@ public class Controller extends Activity implements OnTouchListener,
 
 	private boolean running = false;
 	private int BT_SEND_DELAY = 200;
-	private int ROLAVERAGE = 5;
 
 	private int circleSize = 32;
 	private float lX = 150;
@@ -46,20 +51,21 @@ public class Controller extends Activity implements OnTouchListener,
 	public int arm = 0;
 	public int prearm = 0;
 	String TAG = "Controller";
-	public Rolling Thr;
-	public Rolling Yaw;
-	public Rolling Pit;
-	public Rolling Rol;
-	public Rolling Aux;
 	public static int aPit;
 	public static int aRol;
 	public static int aYaw;
+	private float[] mOrientation = new float[3];
+	private float[] mGData = new float[3];
+	private float[] mMData = new float[3];
+	private float[] mR = new float[16];
+	private float[] mI = new float[16];
+	private float rad2deg = (float) (180.0f / Math.PI);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		int i;
 		super.onCreate(savedInstanceState);
 		setContentView(new MyView(this));
+		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
 		mPaint = new Paint();
 		mPaint.setAntiAlias(true);
@@ -67,31 +73,7 @@ public class Controller extends Activity implements OnTouchListener,
 		mPaint.setColor(0xFFFF0000);
 		mPaint.setStrokeWidth(4);
 
-		super.onCreate(savedInstanceState);
-
-		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
 		bt = new TBlue(MultiWiiBT.remote_device_mac);
-		Thr = new Rolling(5);
-		for (i = 1; i >= ROLAVERAGE; i++) {
-			Thr.add(1);
-		}
-		Yaw = new Rolling(5);
-		for (i = 1; i >= ROLAVERAGE; i++) {
-			Yaw.add(50);
-		}
-		Pit = new Rolling(5);
-		for (i = 1; i >= ROLAVERAGE; i++) {
-			Pit.add(50);
-		}
-		Rol = new Rolling(5);
-		for (i = 1; i >= ROLAVERAGE; i++) {
-			Rol.add(50);
-		}
-		Aux = new Rolling(5);
-		for (i = 1; i >= ROLAVERAGE; i++) {
-			Aux.add(1);
-		}
 
 		if (bt.connected) {
 			running = true;
@@ -145,8 +127,8 @@ public class Controller extends Activity implements OnTouchListener,
 			// desenhar app name
 			mPaint.setColor(0xFF00FFFF);
 			mPaint.setTextSize(42);
-			canvas.drawText("MultiWiiBT UI v" + MultiWiiBT.UI_VERSION,
-					360, 45, mPaint);
+			canvas.drawText("MultiWiiBT UI v" + MultiWiiBT.UI_VERSION, 360, 45,
+					mPaint);
 
 			// desenhar arm/disarm button
 			mPaint.setColor(0xFF660000);
@@ -243,14 +225,10 @@ public class Controller extends Activity implements OnTouchListener,
 							mPit = maxP + fifty;
 							mRol = maxR + fifty;
 
-							mThr = (int) FloatMath.floor(Math.abs(lY - 480) * 100 / 480);
+							mThr = (int) FloatMath
+									.floor(Math.abs(lY - 480) * 100 / 480);
 							mYaw = (int) (lX * 100 / 300);
 
-							Thr.add(mThr);
-							Yaw.add(mYaw);
-
-							Pit.add(mPit);
-							Rol.add(mRol);
 						}
 					}
 				}
@@ -258,7 +236,6 @@ public class Controller extends Activity implements OnTouchListener,
 				break;
 
 			case MotionEvent.ACTION_UP:
-				int i;
 
 				lX = 150;
 				base_mPit = 50;
@@ -266,15 +243,6 @@ public class Controller extends Activity implements OnTouchListener,
 				mPit = 50;
 				mRol = 50;
 				mYaw = 50;
-				for (i = 1; i >= ROLAVERAGE; i++) {
-					Yaw.add(50);
-				}
-				for (i = 1; i >= ROLAVERAGE; i++) {
-					Pit.add(50);
-				}
-				for (i = 1; i >= ROLAVERAGE; i++) {
-					Rol.add(50);
-				}
 
 				if ((prearm == 1) && (x > 600) && (x < 800)) {
 					if ((y > 70) && (y < 130)) {
@@ -300,20 +268,18 @@ public class Controller extends Activity implements OnTouchListener,
 		public Canvas getmCanvas() {
 			return mCanvas;
 		}
-
 	}
-
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		// Register this class as a listener for the accelerometer sensor
-		sensorManager.registerListener(this,
-				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+		Sensor gsensor = sensorManager
+				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		Sensor msensor = sensorManager
+				.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+		sensorManager.registerListener(this, gsensor,
 				SensorManager.SENSOR_DELAY_GAME);
-		// ...and the orientation sensor
-		sensorManager.registerListener(this,
-				sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+		sensorManager.registerListener(this, msensor,
 				SensorManager.SENSOR_DELAY_GAME);
 	}
 
@@ -327,11 +293,26 @@ public class Controller extends Activity implements OnTouchListener,
 	}
 
 	@Override
-	public void onSensorChanged(SensorEvent sensorEvent) {
-		if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
-			roll = Math.round(sensorEvent.values[1]);
-			pitch = Math.round(sensorEvent.values[2]);
+	public void onSensorChanged(SensorEvent event) {
+		int type = event.sensor.getType();
+		float[] data;
+		if (type == Sensor.TYPE_ACCELEROMETER) {
+			data = mGData;
+		} else if (type == Sensor.TYPE_MAGNETIC_FIELD) {
+			data = mMData;
+		} else {
+			// we should not be here.
+			return;
 		}
+		for (int i = 0; i < 3; i++)
+			data[i] = event.values[i];
+
+		SensorManager.getRotationMatrix(mR, mI, mGData, mMData);
+		SensorManager.getOrientation(mR, mOrientation);
+
+		roll = (int) Math.round(mOrientation[1] * rad2deg);
+		pitch = (int) Math.round(mOrientation[2] * rad2deg);
+
 	}
 
 	@Override
@@ -344,59 +325,95 @@ public class Controller extends Activity implements OnTouchListener,
 		@Override
 		public void run() {
 			int mt, mr, mp, my, ma;
+			char[] comando = new char[] { '$', 'M', '<', 0x10, 0xc8, 0x00,
+					0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+					0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+			byte checksum = 0;
+			int THROTTLE = 800;
+			int PITCH = 1500;
+			int ROLL = 1500;
+			int YAW = 1500;
+			int AUX1 = 1500;
+			int AUX2 = 1500;
+			int AUX3 = 1500;
+			int AUX4 = 1500;
+
 			if (running) {
 
-				Thr.add(FloatMath.floor(Math.abs(lY - 480) * 100 / 480));
-				Yaw.add((lX * 99 / 300) + 1);
-				Aux.add((arm * 99) + 1);
+				mThr = (int) FloatMath.floor(Math.abs(lY - 480) * 100 / 480);
+				mYaw = (int) ((lX * 99 / 300) + 1);
+				mAux = (arm * 99) + 1;
+				
+				Log.i(TAG, "mt " + String.valueOf(mThr) );
+				Log.i(TAG, "mr " + String.valueOf(mRol) );
+				Log.i(TAG, "my " + String.valueOf(mYaw) );
 
-				mt = (byte) (Thr.getAverage() * 255 / 100);
-				my = (byte) (Yaw.getAverage() * 255 / 100);
-				mr = (byte) (Rol.getAverage() * 255 / 100);
-				mp = (byte) (Pit.getAverage() * 255 / 100);
-				ma = (byte) (Aux.getAverage() * 255 / 100);
+				mt = (byte) (mThr * 255 / 100);
+				my = (byte) (mYaw * 255 / 100);
+				mr = (byte) (mRol * 255 / 100);
+				mp = (byte) (mPit * 255 / 100);
+				ma = (byte) (mAux * 255 / 100);
 
 				// factor in the influence in percentage
 				mr = (mr + 128) * aRol;
 				mp = (mp + 128) * aPit;
 				my = (my + 128) * aYaw;
 
-				bt.write("K" + (char) mt);
-				bt.write("J" + (char) mr);
-				bt.write("H" + (char) mp);
-				bt.write("G" + (char) my);
-				bt.write("F" + (char) ma);
+				THROTTLE = THROTTLE + (mt * 6);
+				ROLL = ROLL + (mr * 6) - 300;
+				PITCH = PITCH + (mp * 6) - 300;
+				YAW = YAW + (my * 6) - 300;
+				AUX1 = AUX1 + (ma * 6) - 300;
 
-				// bt.write("M");
+				/*
+				 * RC alias #define ROLL 0 #define PITCH 1 #define YAW 2 #define
+				 * THROTTLE 3 #define AUX1 4 #define AUX2 5 #define AUX3 6
+				 * #define AUX4 7
+				 */
+
+				// ROLL
+				comando[5] = (char) (ROLL & 0xff);
+				comando[6] = (char) (ROLL >> 8);
+
+				// PITCH
+				comando[7] = (char) (PITCH & 0xff);
+				comando[8] = (char) (PITCH >> 8);
+
+				// YAW
+				comando[9] = (char) (YAW & 0xff);
+				comando[10] = (char) (YAW >> 8);
+
+				// THROTTLE
+				comando[11] = (char) (THROTTLE & 0xff);
+				comando[12] = (char) (THROTTLE >> 8);
+
+				// AUX1
+				comando[13] = (char) (AUX1 & 0xff);
+				comando[14] = (char) (AUX1 >> 8);
+
+				// AUX2
+				comando[15] = (char) (AUX2 & 0xff);
+				comando[16] = (char) (AUX2 >> 8);
+
+				// AUX3
+				comando[17] = (char) (AUX3 & 0xff);
+				comando[18] = (char) (AUX3 >> 8);
+
+				// AUX4
+				comando[19] = (char) (AUX4 & 0xff);
+				comando[20] = (char) (AUX4 >> 8);
+
+				// calculate checksum
+				for (int i = 3; i < 21; i++) {
+					checksum = (byte) (comando[i] ^ checksum);
+				}
+				comando[21] = (char) checksum;
+
+				Log.i(TAG, "Sending >" + String.valueOf(comando) + "<... ");
+				bt.write(String.valueOf(comando));
+
 				mHandler.postDelayed(CommLink, BT_SEND_DELAY);
 			}
 		}
 	};
-
-	public class Rolling {
-
-		private int size;
-		private double total = 0d;
-		private int index = 0;
-		private double samples[];
-
-		public Rolling(int size) {
-			this.size = size;
-			samples = new double[size];
-			for (int i = 0; i < size; i++)
-				samples[i] = 0d;
-		}
-
-		public void add(double x) {
-			total -= samples[index];
-			samples[index] = x;
-			total += x;
-			if (++index == size)
-				index = 0;
-		}
-
-		public double getAverage() {
-			return total / size;
-		}
-	}
 }
