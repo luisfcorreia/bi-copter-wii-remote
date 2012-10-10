@@ -31,6 +31,7 @@ public class Controller extends Activity implements OnTouchListener,
 	private SensorManager sensorManager = null;
 	private TBlue bt;
 	private String bt_rd = "";
+	String TAG = "Controller";
 
 	private boolean running = false;
 	private int BT_SEND_DELAY = 200;
@@ -38,6 +39,8 @@ public class Controller extends Activity implements OnTouchListener,
 	private int circleSize = 32;
 	private float lX = 150;
 	private float lY = 480 - circleSize;
+
+	private Paint mPaint;
 
 	public int mThr = 1;
 	public int mYaw = 50;
@@ -50,10 +53,16 @@ public class Controller extends Activity implements OnTouchListener,
 	public int roll;
 	public int arm = 0;
 	public int prearm = 0;
-	String TAG = "Controller";
+
 	public static int aPit;
 	public static int aRol;
 	public static int aYaw;
+
+	private int aaPit;
+	private int aaRol;
+	private int aaYaw;
+
+	// for roll & pitch accel/magneto reading
 	private float[] mOrientation = new float[3];
 	private float[] mGData = new float[3];
 	private float[] mMData = new float[3];
@@ -75,6 +84,17 @@ public class Controller extends Activity implements OnTouchListener,
 
 		bt = new TBlue(MultiWiiBT.remote_device_mac);
 
+		/*
+		 * Read values from config file
+		 */
+		aYaw = MultiWiiBT.prefs.getInt("yaw_percent", 50);
+		aPit = MultiWiiBT.prefs.getInt("pitch_percent", 50);
+		aRol = MultiWiiBT.prefs.getInt("roll_percent", 50);
+
+		aaRol = aRol / 100;
+		aaPit = aPit / 100;
+		aaYaw = aYaw / 100;
+
 		if (bt.connected) {
 			running = true;
 			CommLink.run();
@@ -84,8 +104,6 @@ public class Controller extends Activity implements OnTouchListener,
 			finish();
 		}
 	}
-
-	private Paint mPaint;
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
@@ -181,6 +199,9 @@ public class Controller extends Activity implements OnTouchListener,
 
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
+				/*
+				 * Detect throttle & yaw press
+				 */
 				if ((x > 1) && (x < 300)) {
 					if ((y > 1) && (y < 480)) {
 						lX = x;
@@ -189,6 +210,9 @@ public class Controller extends Activity implements OnTouchListener,
 						base_mRol = roll;
 					}
 				}
+				/*
+				 * Detect press in the ARM area
+				 */
 				if ((x > 600) && (x < 800)) {
 					if ((y > 70) && (y < 130)) {
 						prearm = 1;
@@ -244,6 +268,10 @@ public class Controller extends Activity implements OnTouchListener,
 				mRol = 50;
 				mYaw = 50;
 
+				/*
+				 * If this press was started AND stopped in the ARM area, toggle
+				 * the switch
+				 */
 				if ((prearm == 1) && (x > 600) && (x < 800)) {
 					if ((y > 70) && (y < 130)) {
 						prearm = 0;
@@ -320,6 +348,7 @@ public class Controller extends Activity implements OnTouchListener,
 	}
 
 	private Handler mHandler = new Handler();
+
 	private Runnable CommLink = new Runnable() {
 
 		@Override
@@ -327,9 +356,9 @@ public class Controller extends Activity implements OnTouchListener,
 			int mt, mr, mp, my, ma;
 			char[] comando = new char[] { '$', 'M', '<', 0x10, 0xc8, 0x00,
 					0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-					0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-			byte checksum = 0;
-			int THROTTLE = 800;
+					0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+			int checksum = 0;
+			int THROTTLE = 1100;
 			int PITCH = 1500;
 			int ROLL = 1500;
 			int YAW = 1500;
@@ -338,38 +367,70 @@ public class Controller extends Activity implements OnTouchListener,
 			int AUX3 = 1500;
 			int AUX4 = 1500;
 
+			Log.i(TAG, "BT read" + bt.read());
+
 			if (running) {
 
 				mThr = (int) FloatMath.floor(Math.abs(lY - 480) * 100 / 480);
 				mYaw = (int) ((lX * 99 / 300) + 1);
-				mAux = (arm * 99) + 1;
-				
-				Log.i(TAG, "mt " + String.valueOf(mThr) );
-				Log.i(TAG, "mr " + String.valueOf(mRol) );
-				Log.i(TAG, "my " + String.valueOf(mYaw) );
 
-				mt = (byte) (mThr * 255 / 100);
-				my = (byte) (mYaw * 255 / 100);
-				mr = (byte) (mRol * 255 / 100);
-				mp = (byte) (mPit * 255 / 100);
-				ma = (byte) (mAux * 255 / 100);
+				mt = mThr;
+				my = mYaw - 50;
+				mr = mRol - 50;
+				mp = mPit - 50;
+				ma = (arm * 100) - 50;
+
+				Log.i(TAG, "r " + mr);
+				Log.i(TAG, "p " + mp);
+				Log.i(TAG, "y " + my);
+				Log.i(TAG, "---");
 
 				// factor in the influence in percentage
-				mr = (mr + 128) * aRol;
-				mp = (mp + 128) * aPit;
-				my = (my + 128) * aYaw;
+				mr = (mr * aRol);
+				mp = (mp * aPit);
+				my = (my * aYaw);
+
+				Log.i(TAG, "r " + mr);
+				Log.i(TAG, "p " + mp);
+				Log.i(TAG, "y " + my);
+				Log.i(TAG, "t " + mt);
+				Log.i(TAG, "a " + ma);
+
+				Log.i(TAG, "---");
+
+				Log.i(TAG, "ar " + aaRol);
+				Log.i(TAG, "ap " + aaPit);
+				Log.i(TAG, "ay " + aaYaw);
+
+				Log.i(TAG, "before");
 
 				THROTTLE = THROTTLE + (mt * 6);
-				ROLL = ROLL + (mr * 6) - 300;
-				PITCH = PITCH + (mp * 6) - 300;
-				YAW = YAW + (my * 6) - 300;
-				AUX1 = AUX1 + (ma * 6) - 300;
+				ROLL = ROLL + (mr * 6);
+				PITCH = PITCH + (mp * 6);
+				YAW = YAW + (my * 6);
+				AUX1 = AUX1 + (ma * 6);
+
+				Log.i(TAG, "r " + ROLL);
+				Log.i(TAG, "p " + PITCH);
+				Log.i(TAG, "y " + YAW);
+				Log.i(TAG, "t " + THROTTLE);
+				Log.i(TAG, "a " + AUX1);
 
 				/*
 				 * RC alias #define ROLL 0 #define PITCH 1 #define YAW 2 #define
 				 * THROTTLE 3 #define AUX1 4 #define AUX2 5 #define AUX3 6
 				 * #define AUX4 7
 				 */
+
+				comando[0] = '$';
+				comando[1] = 'M';
+				comando[2] = '<';
+				comando[3] = 0x10;
+				comando[4] = 0xc8;
+
+				checksum = 0;
+				checksum ^= (comando[3] & 0xFF);
+				checksum ^= (comando[4] & 0xFF);
 
 				// ROLL
 				comando[5] = (char) (ROLL & 0xff);
@@ -405,12 +466,12 @@ public class Controller extends Activity implements OnTouchListener,
 
 				// calculate checksum
 				for (int i = 3; i < 21; i++) {
-					checksum = (byte) (comando[i] ^ checksum);
+					checksum ^= (comando[i] & 0xFF);
 				}
 				comando[21] = (char) checksum;
 
-				Log.i(TAG, "Sending >" + String.valueOf(comando) + "<... ");
-				bt.write(String.valueOf(comando));
+				// Log.i(TAG, "Sending " + String.valueOf(comando) + " . ");
+				// bt.write(String.valueOf(comando));
 
 				mHandler.postDelayed(CommLink, BT_SEND_DELAY);
 			}
