@@ -58,9 +58,9 @@ public class Controller extends Activity implements OnTouchListener,
 	public static int aRol;
 	public static int aYaw;
 
-	private int aaPit;
-	private int aaRol;
-	private int aaYaw;
+	private double aaPit = 0.0;
+	private double aaRol = 0.0;
+	private double aaYaw = 0.0;
 
 	// for roll & pitch accel/magneto reading
 	private float[] mOrientation = new float[3];
@@ -91,9 +91,9 @@ public class Controller extends Activity implements OnTouchListener,
 		aPit = MultiWiiBT.prefs.getInt("pitch_percent", 50);
 		aRol = MultiWiiBT.prefs.getInt("roll_percent", 50);
 
-		aaRol = aRol / 100;
-		aaPit = aPit / 100;
-		aaYaw = aYaw / 100;
+		aaRol = aRol / 100.0;
+		aaPit = aPit / 100.0;
+		aaYaw = aYaw / 100.0;
 
 		if (bt.connected) {
 			running = true;
@@ -354,9 +354,9 @@ public class Controller extends Activity implements OnTouchListener,
 		@Override
 		public void run() {
 			int mt, mr, mp, my, ma;
-			char[] comando = new char[] { '$', 'M', '<', 0x10, 0xc8, 0x00,
+			char[] mw = new char[] { 0x10, 0xc8, 0x00, 0x00, 0x00, 0x00, 0x00,
 					0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-					0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+					0x00, 0x00 };
 			int checksum = 0;
 			int THROTTLE = 1100;
 			int PITCH = 1500;
@@ -366,44 +366,33 @@ public class Controller extends Activity implements OnTouchListener,
 			int AUX2 = 1500;
 			int AUX3 = 1500;
 			int AUX4 = 1500;
-
-			Log.i(TAG, "BT read" + bt.read());
+			String comms = "";
 
 			if (running) {
 
 				mThr = (int) FloatMath.floor(Math.abs(lY - 480) * 100 / 480);
 				mYaw = (int) ((lX * 99 / 300) + 1);
 
+				/*
+				 * Values now go from 0-100 for Throttle All others go from -50
+				 * +50
+				 */
 				mt = mThr;
 				my = mYaw - 50;
 				mr = mRol - 50;
 				mp = mPit - 50;
 				ma = (arm * 100) - 50;
 
-				Log.i(TAG, "r " + mr);
-				Log.i(TAG, "p " + mp);
-				Log.i(TAG, "y " + my);
-				Log.i(TAG, "---");
+				/*
+				 * factor in the influence in percentage
+				 */
+				mr = (int) (mr * aaRol);
+				mp = (int) (mp * aaPit);
+				my = (int) (my * aaYaw);
 
-				// factor in the influence in percentage
-				mr = (mr * aRol);
-				mp = (mp * aPit);
-				my = (my * aYaw);
-
-				Log.i(TAG, "r " + mr);
-				Log.i(TAG, "p " + mp);
-				Log.i(TAG, "y " + my);
-				Log.i(TAG, "t " + mt);
-				Log.i(TAG, "a " + ma);
-
-				Log.i(TAG, "---");
-
-				Log.i(TAG, "ar " + aaRol);
-				Log.i(TAG, "ap " + aaPit);
-				Log.i(TAG, "ay " + aaYaw);
-
-				Log.i(TAG, "before");
-
+				/*
+				 * translate values to pulse data
+				 */
 				THROTTLE = THROTTLE + (mt * 6);
 				ROLL = ROLL + (mr * 6);
 				PITCH = PITCH + (mp * 6);
@@ -417,62 +406,80 @@ public class Controller extends Activity implements OnTouchListener,
 				Log.i(TAG, "a " + AUX1);
 
 				/*
-				 * RC alias #define ROLL 0 #define PITCH 1 #define YAW 2 #define
-				 * THROTTLE 3 #define AUX1 4 #define AUX2 5 #define AUX3 6
+				 * MultiWii header
+				 */
+				/*
+				 * comando[0] = '$'; comando[1] = 'M'; comando[2] = '<';
+				 */
+				mw[0] = 0x10;
+				mw[1] = 0xc8;
+
+				/*
+				 * #define ROLL 0
+				 */
+				mw[2] = (char) (ROLL & 0xff);
+				mw[3] = (char) (ROLL >> 8);
+
+				/*
+				 * #define PITCH 1
+				 */
+				mw[4] = (char) (PITCH & 0xff);
+				mw[5] = (char) (PITCH >> 8);
+
+				/*
+				 * #define YAW 2
+				 */
+				mw[6] = (char) (YAW & 0xff);
+				mw[7] = (char) (YAW >> 8);
+
+				/*
+				 * #define THROTTLE 3
+				 */
+				mw[8] = (char) (THROTTLE & 0xff);
+				mw[9] = (char) (THROTTLE >> 8);
+
+				/*
+				 * #define AUX1 4
+				 */
+				mw[10] = (char) (AUX1 & 0xff);
+				mw[11] = (char) (AUX1 >> 8);
+
+				/*
+				 * #define AUX2 5
+				 */
+				mw[12] = (char) (AUX2 & 0xff);
+				mw[13] = (char) (AUX2 >> 8);
+
+				/*
+				 * #define AUX3 6
+				 */
+				mw[14] = (char) (AUX3 & 0xff);
+				mw[15] = (char) (AUX3 >> 8);
+
+				/*
 				 * #define AUX4 7
 				 */
+				mw[16] = (char) (AUX4 & 0xff);
+				mw[17] = (char) (AUX4 >> 8);
 
-				comando[0] = '$';
-				comando[1] = 'M';
-				comando[2] = '<';
-				comando[3] = 0x10;
-				comando[4] = 0xc8;
-
+				/*
+				 * calculate checksum
+				 */
 				checksum = 0;
-				checksum ^= (comando[3] & 0xFF);
-				checksum ^= (comando[4] & 0xFF);
-
-				// ROLL
-				comando[5] = (char) (ROLL & 0xff);
-				comando[6] = (char) (ROLL >> 8);
-
-				// PITCH
-				comando[7] = (char) (PITCH & 0xff);
-				comando[8] = (char) (PITCH >> 8);
-
-				// YAW
-				comando[9] = (char) (YAW & 0xff);
-				comando[10] = (char) (YAW >> 8);
-
-				// THROTTLE
-				comando[11] = (char) (THROTTLE & 0xff);
-				comando[12] = (char) (THROTTLE >> 8);
-
-				// AUX1
-				comando[13] = (char) (AUX1 & 0xff);
-				comando[14] = (char) (AUX1 >> 8);
-
-				// AUX2
-				comando[15] = (char) (AUX2 & 0xff);
-				comando[16] = (char) (AUX2 >> 8);
-
-				// AUX3
-				comando[17] = (char) (AUX3 & 0xff);
-				comando[18] = (char) (AUX3 >> 8);
-
-				// AUX4
-				comando[19] = (char) (AUX4 & 0xff);
-				comando[20] = (char) (AUX4 >> 8);
-
-				// calculate checksum
-				for (int i = 3; i < 21; i++) {
-					checksum ^= (comando[i] & 0xFF);
+				for (int i = 0; i < 17; i++) {
+					checksum ^= (mw[i] & 0xFF);
 				}
-				comando[21] = (char) checksum;
+				mw[17] = (char) checksum;
 
-				// Log.i(TAG, "Sending " + String.valueOf(comando) + " . ");
-				// bt.write(String.valueOf(comando));
+				/*
+				 * Send string to MultiWii device
+				 */
+				comms = String.valueOf(mw);
+				bt.write("$M<" + comms);
 
+				Log.i(TAG, "$M<" + comms);
+
+				Log.i(TAG, "BT read" + bt.read());
 				mHandler.postDelayed(CommLink, BT_SEND_DELAY);
 			}
 		}
