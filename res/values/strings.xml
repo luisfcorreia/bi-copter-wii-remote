@@ -17,11 +17,11 @@
     <string name="cfg_ncon">Not Connected</string>
     <string name="cfg_con">Connected to: </string>
     <string name="cfg_pair">Pair device</string>
-    <string name="cfg_save">Save prefs.</string>
+    <string name="cfg_save">Save-Exit</string>
     <string name="cfg_yaw">YAW control</string>
     <string name="cfg_pitch">Pitch control</string>
     <string name="cfg_roll">Roll control</string>
-    <string name="btn_start">Start game</string>
+    <string name="btn_start">Start</string>
     <string name="btn_config">Config</string>
     <string name="btn_exit">Exit</string>
     <string name="about_menu">About</string>

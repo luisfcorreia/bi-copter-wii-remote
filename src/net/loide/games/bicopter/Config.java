@@ -13,12 +13,17 @@ import android.widget.Toast;
 public class Config extends Activity implements OnClickListener {
 	private static final int REQUEST_CONNECT_DEVICE = 1;
 	private static final int REQUEST_ENABLE_BT = 2;
-
+	private int aPit;
+	private int aRol;
+	private int aYaw;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.config);
+
+		
 		Button btn1 = (Button) findViewById(R.id.btnConnect);
 		btn1.setOnClickListener(this);
 		Button btn2 = (Button) findViewById(R.id.btnSave);
@@ -42,12 +47,12 @@ public class Config extends Activity implements OnClickListener {
 			MultiWiiBT.remote_device_mac = MultiWiiBT.prefs
 					.getString("remote_device", "");
 
-			Controller.aYaw = MultiWiiBT.prefs.getInt("yaw_percent", 50);
-			Controller.aPit = MultiWiiBT.prefs.getInt("pitch_percent", 50);
-			Controller.aRol = MultiWiiBT.prefs.getInt("roll_percent", 50);
-			sbYAW.setProgress(Controller.aYaw);
-			sbPitch.setProgress(Controller.aPit);
-			sbRoll.setProgress(Controller.aRol);
+			aYaw = MultiWiiBT.prefs.getInt("yaw_percent", 50);
+			aPit = MultiWiiBT.prefs.getInt("pitch_percent", 50);
+			aRol = MultiWiiBT.prefs.getInt("roll_percent", 50);
+			sbYAW.setProgress(aYaw);
+			sbPitch.setProgress(aPit);
+			sbRoll.setProgress(aRol);
 		}
 	}
 
@@ -74,20 +79,20 @@ public class Config extends Activity implements OnClickListener {
 		switch (skb.getId()) {
 		case R.id.sbYAW:
 			tv1 = (TextView) this.findViewById(R.id.tvYAW);
-			Controller.aYaw = skb.getProgress();
-			tv1.setText(getString(R.string.cfg_yaw) + " " + Controller.aYaw
+			aYaw = skb.getProgress();
+			tv1.setText(getString(R.string.cfg_yaw) + " " + aYaw
 					+ "%");
 			break;
 		case R.id.sbPitch:
 			tv1 = (TextView) this.findViewById(R.id.tvPitch);
-			Controller.aPit = skb.getProgress();
-			tv1.setText(getString(R.string.cfg_pitch) + " " + Controller.aPit
+			aPit = skb.getProgress();
+			tv1.setText(getString(R.string.cfg_pitch) + " " + aPit
 					+ "%");
 			break;
 		case R.id.sbRoll:
 			tv1 = (TextView) this.findViewById(R.id.tvRoll);
-			Controller.aRol = skb.getProgress();
-			tv1.setText(getString(R.string.cfg_roll) + " " + Controller.aRol
+			aRol = skb.getProgress();
+			tv1.setText(getString(R.string.cfg_roll) + " " + aRol
 					+ " %");
 			break;
 		}
@@ -106,13 +111,13 @@ public class Config extends Activity implements OnClickListener {
 					.edit()
 					.putString("remote_device",
 							MultiWiiBT.remote_device_mac).commit();
-			MultiWiiBT.prefs.edit().putInt("yaw_percent", Controller.aYaw)
+			MultiWiiBT.prefs.edit().putInt("yaw_percent", aYaw)
 					.commit();
 			MultiWiiBT.prefs.edit()
-					.putInt("pitch_percent", Controller.aPit).commit();
+					.putInt("pitch_percent", aPit).commit();
 			MultiWiiBT.prefs.edit()
-					.putInt("roll_percent", Controller.aRol).commit();
-
+					.putInt("roll_percent", aRol).commit();
+			finish();
 			break;
 		}
 	}

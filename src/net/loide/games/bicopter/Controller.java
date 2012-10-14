@@ -27,13 +27,15 @@ import android.widget.Toast;
 public class Controller extends Activity implements OnTouchListener,
 		SensorEventListener {
 
-	// Unique UUID for this application
 	private SensorManager sensorManager = null;
 	private TBlue bt;
 	private String bt_rd = "";
 	String TAG = "Controller";
-
 	private boolean running = false;
+
+	/*
+	 * delay in mS between consecutive packets
+	 */
 	private int BT_SEND_DELAY = 200;
 
 	private int circleSize = 32;
@@ -54,15 +56,13 @@ public class Controller extends Activity implements OnTouchListener,
 	public int arm = 0;
 	public int prearm = 0;
 
-	public static int aPit;
-	public static int aRol;
-	public static int aYaw;
-
 	private double aaPit = 0.0;
 	private double aaRol = 0.0;
 	private double aaYaw = 0.0;
 
-	// for roll & pitch accel/magneto reading
+	/*
+	 * for roll & pitch accel/magneto reading
+	 */
 	private float[] mOrientation = new float[3];
 	private float[] mGData = new float[3];
 	private float[] mMData = new float[3];
@@ -72,17 +72,28 @@ public class Controller extends Activity implements OnTouchListener,
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		setContentView(new MyView(this));
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
+		int aPit;
+		int aRol;
+		int aYaw;
+
+		/*
+		 * Setup drawing parameters
+		 */
 		mPaint = new Paint();
 		mPaint.setAntiAlias(true);
 		mPaint.setDither(true);
 		mPaint.setColor(0xFFFF0000);
 		mPaint.setStrokeWidth(4);
 
-		bt = new TBlue(MultiWiiBT.remote_device_mac);
+		/*
+		 * Initialize BT object with mac from config file
+		 */
+		bt = new TBlue(MultiWiiBT.prefs.getString("remote_device", ""));
 
 		/*
 		 * Read values from config file
@@ -91,13 +102,20 @@ public class Controller extends Activity implements OnTouchListener,
 		aPit = MultiWiiBT.prefs.getInt("pitch_percent", 50);
 		aRol = MultiWiiBT.prefs.getInt("roll_percent", 50);
 
+		/*
+		 * Factor in the configured percentages
+		 */
 		aaRol = aRol / 100.0;
 		aaPit = aPit / 100.0;
 		aaYaw = aYaw / 100.0;
 
+		/*
+		 * test for bluetooth device availability
+		 */
 		if (bt.connected) {
 			running = true;
 			CommLink.run();
+			Log.i(TAG,"Session started");
 		} else {
 			Toast.makeText(this, getString(R.string.btdev_una),
 					Toast.LENGTH_LONG).show();
@@ -354,7 +372,7 @@ public class Controller extends Activity implements OnTouchListener,
 		@Override
 		public void run() {
 			int mt, mr, mp, my, ma;
-			char[] mw = new char[] { 0x10, 0xc8, 0x00, 0x00, 0x00, 0x00, 0x00,
+			char[] mw = new char[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 					0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 					0x00, 0x00 };
 			int checksum = 0;
@@ -369,6 +387,11 @@ public class Controller extends Activity implements OnTouchListener,
 			String comms = "";
 
 			if (running) {
+
+				/*
+				 * Read string from BlueTooth adapter
+				 */
+				bt_rd = bt.read();
 
 				mThr = (int) FloatMath.floor(Math.abs(lY - 480) * 100 / 480);
 				mYaw = (int) ((lX * 99 / 300) + 1);
@@ -399,17 +422,8 @@ public class Controller extends Activity implements OnTouchListener,
 				YAW = YAW + (my * 6);
 				AUX1 = AUX1 + (ma * 6);
 
-				Log.i(TAG, "r " + ROLL);
-				Log.i(TAG, "p " + PITCH);
-				Log.i(TAG, "y " + YAW);
-				Log.i(TAG, "t " + THROTTLE);
-				Log.i(TAG, "a " + AUX1);
-
 				/*
-				 * MultiWii header
-				 */
-				/*
-				 * comando[0] = '$'; comando[1] = 'M'; comando[2] = '<';
+				 * MultiWii data length and command (16 and 200)
 				 */
 				mw[0] = 0x10;
 				mw[1] = 0xc8;
@@ -466,10 +480,10 @@ public class Controller extends Activity implements OnTouchListener,
 				 * calculate checksum
 				 */
 				checksum = 0;
-				for (int i = 0; i < 17; i++) {
+				for (int i = 0; i < 18; i++) {
 					checksum ^= (mw[i] & 0xFF);
 				}
-				mw[17] = (char) checksum;
+				mw[18] = (char) checksum;
 
 				/*
 				 * Send string to MultiWii device
@@ -477,9 +491,9 @@ public class Controller extends Activity implements OnTouchListener,
 				comms = String.valueOf(mw);
 				bt.write("$M<" + comms);
 
-				Log.i(TAG, "$M<" + comms);
-
-				Log.i(TAG, "BT read" + bt.read());
+				/*
+				 * Delay runner for defined mS, to prevent arduino flooding
+				 */
 				mHandler.postDelayed(CommLink, BT_SEND_DELAY);
 			}
 		}

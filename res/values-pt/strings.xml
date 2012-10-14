@@ -17,11 +17,11 @@
     <string name="cfg_ncon">Não ligado</string>
     <string name="cfg_con">Ligado a: </string>
     <string name="cfg_pair">Emparelhar</string>
-    <string name="cfg_save">Gravar</string>
+    <string name="cfg_save">Gravar Sair</string>
     <string name="cfg_yaw">Controle YAW</string>
     <string name="cfg_pitch">Controle Pitch</string>
     <string name="cfg_roll">Controle Roll</string>
-    <string name="btn_start">Iniciar jogo</string>
+    <string name="btn_start">Iniciar</string>
     <string name="btn_config">Configuração</string>
     <string name="btn_exit">Sair</string>
     <string name="about_menu">Sobre</string>
