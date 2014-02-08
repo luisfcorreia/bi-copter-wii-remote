@@ -30,7 +30,9 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 	public static String adID = "a14eced1c1c11aa";
 	PopupWindow pw;
 	View lay_about;
-	// Intent request codes
+	/*
+	 *  Intent request codes
+	 */
 	private static final int REQUEST_CONNECT_DEVICE = 1;
 	private static final int REQUEST_ENABLE_BT = 2;
 
@@ -41,7 +43,9 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		// Ads stuff
+		/*
+		 *  Ads stuff
+		 */
 		LinearLayout layout = (LinearLayout) findViewById(R.id.adThing);
 		AdView adView = new AdView(this, AdSize.BANNER, adID);
 		layout.addView(adView);
@@ -68,11 +72,15 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 		button2.setOnClickListener(this);
 		button3.setOnClickListener(this);
 
-		// Get local Bluetooth adapter
+		/*
+		 *  Get local Bluetooth adapter
+		 */
 		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter
 				.getDefaultAdapter();
 
-		// If the adapter is null, then Bluetooth is not supported
+		/*
+		 *  If the adapter is null, then Bluetooth is not supported
+		 */
 		if (mBluetoothAdapter == null) {
 			Toast.makeText(this, getString(R.string.btdev_na),
 					Toast.LENGTH_LONG).show();
@@ -80,7 +88,10 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 			return;
 		}
 
-		// If BT is not on, request that it be enabled.
+		/*
+		 *  If BT is not on, request that it be enabled.
+		 *  may not work for Android 4+ devices
+		 */
 		if (!mBluetoothAdapter.isEnabled()) {
 			Intent enableIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -100,23 +111,30 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 						Toast.LENGTH_LONG).show();
 			} else {
 
+				/*
+				 * TODO insert code to properly detect 
+				 * a compatible MultiWii version device
+				 */
+				
 				myIntent = new Intent(MultiWiiBT.this, Controller.class);
 				MultiWiiBT.this.startActivity(myIntent);
-				/*
-				 * myIntent = new Intent(MultiWiiBT.this, ControlSurface.class);
-				 * MultiWiiBT.this.startActivity(myIntent);
-				 */
+
 			}
 			break;
 
 		case R.id.configBtn:
+			/*
+			 * Start the config screen
+			 */
 			myIntent = new Intent(MultiWiiBT.this, Config.class);
 			MultiWiiBT.this.startActivity(myIntent);
 			break;
 
 		case R.id.exitBtn:
-			// handle button B click;
-			MultiWiiBT.this.finish();
+			/*
+			 *  Exits the application;
+			 */
+			finish();
 			break;
 		}
 	}
@@ -125,13 +143,19 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 		case REQUEST_CONNECT_DEVICE:
-			// When DeviceListActivity returns with a device to connect
+			/*
+			 *  When DeviceListActivity returns with a device to connect
+			 */
 			if (resultCode == Activity.RESULT_OK) {
-				// Get the device MAC address
+				/*
+				 *  Get the device MAC address
+				 */
 				remote_device_mac = data.getExtras().getString(
 						BTDeviceList.EXTRA_DEVICE_ADDRESS);
 
-				// Save preference in config file
+				/*
+				 *  Save preference in config file
+				 */
 				prefs.edit().putString("remote_device", remote_device_mac)
 						.commit();
 
@@ -144,7 +168,9 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 			}
 			break;
 		case REQUEST_ENABLE_BT:
-			// When the request to enable Bluetooth returns
+			/*
+			 *  When the request to enable Bluetooth returns
+			 */
 			if (resultCode == Activity.RESULT_OK) {
 			} else {
 				// User did not enable Bluetooth or an error occured
@@ -164,7 +190,9 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle item selection
+		/*
+		 *  Handle item selection
+		 */
 		switch (item.getItemId()) {
 		case R.id.about:
 			AlertDialog.Builder helpBuilder = new AlertDialog.Builder(this);
@@ -178,7 +206,9 @@ public class MultiWiiBT extends Activity implements OnClickListener {
 						public void onClick(DialogInterface dialog, int which) {
 						}
 					});
-			// Remember, create doesn't show the dialog
+			/*
+			 *  Remember, create doesn't show the dialog
+			 */
 			AlertDialog helpDialog = helpBuilder.create();
 			helpDialog.show();
 			return true;
