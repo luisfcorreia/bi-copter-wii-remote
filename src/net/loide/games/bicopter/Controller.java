@@ -420,76 +420,109 @@ public class Controller extends Activity implements OnTouchListener,
 				ROLL = ROLL + (mr * 6);
 				PITCH = PITCH + (mp * 6);
 				YAW = YAW + (my * 6);
-				AUX1 = AUX1 + (ma * 6);
-
-				/*
-				 * MultiWii data length and command (16 and 200)
-				 */
-				mw[0] = 0x10;
-				mw[1] = 0xc8;
-
-				/*
-				 * #define ROLL 0
-				 */
-				mw[2] = (char) (ROLL & 0xff);
-				mw[3] = (char) (ROLL >> 8);
-
-				/*
-				 * #define PITCH 1
-				 */
-				mw[4] = (char) (PITCH & 0xff);
-				mw[5] = (char) (PITCH >> 8);
-
-				/*
-				 * #define YAW 2
-				 */
-				mw[6] = (char) (YAW & 0xff);
-				mw[7] = (char) (YAW >> 8);
-
-				/*
-				 * #define THROTTLE 3
-				 */
-				mw[8] = (char) (THROTTLE & 0xff);
-				mw[9] = (char) (THROTTLE >> 8);
-
-				/*
-				 * #define AUX1 4
-				 */
-				mw[10] = (char) (AUX1 & 0xff);
-				mw[11] = (char) (AUX1 >> 8);
-
-				/*
-				 * #define AUX2 5
-				 */
-				mw[12] = (char) (AUX2 & 0xff);
-				mw[13] = (char) (AUX2 >> 8);
-
-				/*
-				 * #define AUX3 6
-				 */
-				mw[14] = (char) (AUX3 & 0xff);
-				mw[15] = (char) (AUX3 >> 8);
-
-				/*
-				 * #define AUX4 7
-				 */
-				mw[16] = (char) (AUX4 & 0xff);
-				mw[17] = (char) (AUX4 >> 8);
-
-				/*
-				 * calculate checksum
-				 */
-				checksum = 0;
-				for (int i = 0; i < 18; i++) {
-					checksum ^= (mw[i] & 0xFF);
-				}
-				mw[18] = (char) checksum;
-
-				/*
-				 * Send string to MultiWii device
-				 */
-				comms = String.valueOf(mw);
-				bt.write("$M<" + comms);
+				AUX1 = AUX1 + (ma * 6);	
+				
+				
+				
+//				mThr = (int) FloatMath.floor(Math.abs(lY - 480) * 100 / 480);
+//				mYaw = (int) ((lX * 99 / 300) + 1);
+//
+//				/*
+//				 * Values now go from 0-100 for Throttle All others go from -50
+//				 * +50
+//				 */
+//				mt = mThr;
+//				my = mYaw - 50;
+//				mr = mRol - 50;
+//				mp = mPit - 50;
+//				ma = (arm * 100) - 50;
+//
+//				/*
+//				 * factor in the influence in percentage
+//				 */
+//				mr = (int) (mr * aaRol);
+//				mp = (int) (mp * aaPit);
+//				my = (int) (my * aaYaw);
+//
+//				/*
+//				 * translate values to pulse data
+//				 */
+//				THROTTLE = THROTTLE + (mt * 6);
+//				ROLL = ROLL + (mr * 6);
+//				PITCH = PITCH + (mp * 6);
+//				YAW = YAW + (my * 6);
+//				AUX1 = AUX1 + (ma * 6);
+//
+//				/*
+//				 * MultiWii data length and command (16 and 200)
+//				 */
+//				mw[0] = 0x10;
+//				mw[1] = 0xc8;
+//
+//				/*
+//				 * #define ROLL 0
+//				 */
+//				mw[2] = (char) (ROLL & 0xff);
+//				mw[3] = (char) (ROLL >> 8);
+//
+//				/*
+//				 * #define PITCH 1
+//				 */
+//				mw[4] = (char) (PITCH & 0xff);
+//				mw[5] = (char) (PITCH >> 8);
+//
+//				/*
+//				 * #define YAW 2
+//				 */
+//				mw[6] = (char) (YAW & 0xff);
+//				mw[7] = (char) (YAW >> 8);
+//
+//				/*
+//				 * #define THROTTLE 3
+//				 */
+//				mw[8] = (char) (THROTTLE & 0xff);
+//				mw[9] = (char) (THROTTLE >> 8);
+//
+//				/*
+//				 * #define AUX1 4
+//				 */
+//				mw[10] = (char) (AUX1 & 0xff);
+//				mw[11] = (char) (AUX1 >> 8);
+//
+//				/*
+//				 * #define AUX2 5
+//				 */
+//				mw[12] = (char) (AUX2 & 0xff);
+//				mw[13] = (char) (AUX2 >> 8);
+//
+//				/*
+//				 * #define AUX3 6
+//				 */
+//				mw[14] = (char) (AUX3 & 0xff);
+//				mw[15] = (char) (AUX3 >> 8);
+//
+//				/*
+//				 * #define AUX4 7
+//				 */
+//				mw[16] = (char) (AUX4 & 0xff);
+//				mw[17] = (char) (AUX4 >> 8);
+//
+//				/*
+//				 * calculate checksum
+//				 */
+//				checksum = 0;
+//				for (int i = 0; i < 18; i++) {
+//					checksum ^= (mw[i] & 0xFF);
+//				}
+//				mw[18] = (char) checksum;
+//
+//				/*
+//				 * Send string to MultiWii device
+//				 */
+//				comms = String.valueOf(mw);
+//				bt.write("$M<" + comms);
+//				
+			
 
 				/*
 				 * Delay runner for defined mS, to prevent arduino flooding
